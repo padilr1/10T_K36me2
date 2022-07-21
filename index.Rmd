@@ -1,0 +1,139 @@
+---
+title: ""
+author: ""
+date: ""
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: false
+    toc_depth: 3
+    smooth_scroll: false
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(reshape2)
+library(tidyverse)
+library(rtracklayer)
+library(isoband)
+library(sf)
+library(MASS)
+library(lwgeom)
+library(ggrepel)
+library(hexbin)
+library(ggrastr)
+library(viridis)
+library(pals)
+library(patchwork)
+library(highcharter)
+library(dplyr)
+library(GenomicRanges)
+library(reactable)
+library(data.table)
+#
+library(DESeq2)
+library(edgeR)
+#
+library(plotly)
+#
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+library(org.Mm.eg.db)
+library(ChIPseeker)
+#
+library(gprofiler2)
+library(clusterProfiler)
+#
+txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
+#
+options(ChIPseeker.ignore_1st_exon = TRUE)
+options(ChIPseeker.ignore_1st_intron = TRUE)
+options(ChIPseeker.ignore_downstream = TRUE)
+options(ChIPseeker.ignore_promoter_subcategory = TRUE)
+```
+
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+setwd("~/Documents/10T_K36me2")
+wd <- paste0("~~/Documents/10T_K36me2")
+```
+
+# Distribution of QKO K36me2 residual peaks - 156 Total Peaks
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+# b <- import.bed("~/Documents/TKO_QKO/data/span.models/10T.QKO_c1.K36me2.final.peaks.bed")
+# p <- annotatePeak(b,TxDb = txdb,tssRegion = c(-3000, 3000))
+load("~/Documents/10T_K36me2/data/QKO.R.data/annotatedPeak.QKO.RData")
+plotAnnoBar(p)
+plotDistToTSS(p)
+```
+
+# Over-representation Analysis - K36me2 Peaks = 156 peaks total {.tabset}
+
+## KEGG Pathways
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+load(file="~/Documents/10T_K36me2/data/QKO.r.data/kegg_results.RData")
+#
+dotplot(ekegg,title="KEGG pathways")
+```
+
+## GO
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+load(file="~/Documents/10T_K36me2/data/QKO.r.data/gost_results.RData")
+g$result %>% dplyr::select(c("term_name", "intersection_size", "p_value")) %>% setnames(c("term_name","Count","p_value")) %>% dplyr::filter(Count > 10) %>% dplyr::arrange(p_value) %>%
+  slice(1:10) %>% dplyr::arrange(desc(p_value)) %>%
+  ggplot(aes(y = Count, x = factor(term_name, levels = term_name), fill = (p_value))) + 
+  geom_bar(position = position_dodge(),stat = "identity") +
+  coord_flip() +
+  scale_fill_gradient(high="red",low = "blue", name = "FDR", trans = 'reverse') +
+  labs(x = "", title="",y ="Number of Genes") + 
+  theme(plot.title=element_text(face="bold",size=12), axis.title.y = element_text(size=10,face="bold"),axis.text.y = element_text(face = "bold",size = 8,colour = "black")) +
+  theme_bw()
+#
+g$result %>% as.data.frame() %>%
+  dplyr::filter(intersection_size > 2) %>% dplyr::arrange(p_value) %>%
+  dplyr::slice(1:10) %>% dplyr::arrange((intersection_size)) %>%
+  select("source", "term_name","intersection", "intersection_size","p_value") %>%
+  setnames(c("Source","Description","Genes","Count","FDR")) %>%
+  select(-Count) %>% map_df(rev) %>% reactable()
+#
+# load(file="~/Documents/TKO_QKO/data/QKO.r.data/ego_results.RData")
+# #
+# dotplot(ego,showCategory=10,title="Gene Ontology (GO)")
+```
+
+# Distribution of ATACseq peaks overlapping K36me2 peaks - 437 total peaks
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+# b <- import.bed("~/Documents/10T_K36me2/data/peaks/QKO_c1.K36me2.ATAC.bed")
+# p <- annotatePeak(b,TxDb = txdb,tssRegion = c(-3000, 3000))
+load("~/Documents/10T_K36me2/data/QKO.R.data/ATACseq.overlap.K36me2.annotatedPeak.RData")
+plotAnnoBar(p,title = "437 ATACseq peaks overlapping QKO K36me2 peaks")
+plotDistToTSS(p)
+```
+
+# Over-representation Analysis - ATACseq peaks overlapping K36me2 Peaks = 437 peaks total {.tabset}
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+load(file="~/Documents/10T_K36me2/data/QKO.r.data/gost_results_ATACoverlappingK36me2.RData")
+g$result %>% dplyr::select(c("term_name", "intersection_size", "p_value")) %>% setnames(c("term_name","Count","p_value")) %>% dplyr::filter(Count > 10) %>% dplyr::arrange(p_value) %>%
+  slice(1:10) %>% dplyr::arrange(desc(p_value)) %>%
+  ggplot(aes(y = Count, x = factor(term_name, levels = term_name), fill = (p_value))) + 
+  geom_bar(position = position_dodge(),stat = "identity") +
+  coord_flip() +
+  scale_fill_gradient(high="red",low = "blue", name = "FDR", trans = 'reverse') +
+  labs(x = "", title="",y ="Number of Genes") + 
+  theme(plot.title=element_text(face="bold",size=12), axis.title.y = element_text(size=10,face="bold"),axis.text.y = element_text(face = "bold",size = 8,colour = "black")) +
+  theme_bw()
+#
+g$result %>% as.data.frame() %>%
+  dplyr::filter(intersection_size > 2) %>% dplyr::arrange(p_value) %>%
+  dplyr::slice(1:10) %>% dplyr::arrange((intersection_size)) %>%
+  select("source", "term_name","intersection", "intersection_size","p_value") %>%
+  setnames(c("Source","Description","Genes","Count","FDR")) %>%
+  select(-Count) %>% map_df(rev) %>% reactable()
+#
+# load(file="~/Documents/TKO_QKO/data/QKO.r.data/ego_results.RData")
+# #
+# dotplot(ego,showCategory=10,title="Gene Ontology (GO)")
+```
+
