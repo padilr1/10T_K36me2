@@ -47,6 +47,10 @@ library(ChIPseeker)
 library(gprofiler2)
 library(clusterProfiler)
 #
+library(ChIPpeakAnno)
+library(VennDiagram)
+library(Vennerable)
+#
 txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
 #
 options(ChIPseeker.ignore_1st_exon = TRUE)
@@ -64,7 +68,7 @@ wd <- paste0("~~/Documents/10T_K36me2")
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
 # b <- import.bed("~/Documents/TKO_QKO/data/span.models/10T.QKO_c1.K36me2.final.peaks.bed")
 # p <- annotatePeak(b,TxDb = txdb,tssRegion = c(-3000, 3000))
-load("~/Documents/10T_K36me2/data/QKO.R.data/annotatedPeak.QKO.RData")
+load("~/Documents/10T_K36me2/data/RData/QKO/annotatedPeak.QKO.RData")
 plotAnnoBar(p)
 plotDistToTSS(p)
 ```
@@ -73,14 +77,14 @@ plotDistToTSS(p)
 
 ## KEGG Pathways
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-load(file="~/Documents/10T_K36me2/data/QKO.r.data/kegg_results.RData")
+load(file="~/Documents/10T_K36me2/data/RData/QKO/kegg_results.RData")
 #
-dotplot(ekegg,title="KEGG pathways")
+clusterProfiler::dotplot(ekegg,title="KEGG pathways")
 ```
 
 ## GO
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-load(file="~/Documents/10T_K36me2/data/QKO.r.data/gost_results.RData")
+load(file="~/Documents/10T_K36me2/data/RData/QKO/gost_results.RData")
 g$result %>% dplyr::select(c("term_name", "intersection_size", "p_value")) %>% setnames(c("term_name","Count","p_value")) %>% dplyr::filter(Count > 10) %>% dplyr::arrange(p_value) %>%
   slice(1:10) %>% dplyr::arrange(desc(p_value)) %>%
   ggplot(aes(y = Count, x = factor(term_name, levels = term_name), fill = (p_value))) + 
@@ -107,14 +111,14 @@ g$result %>% as.data.frame() %>%
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
 # b <- import.bed("~/Documents/10T_K36me2/data/peaks/QKO_c1.K36me2.ATAC.bed")
 # p <- annotatePeak(b,TxDb = txdb,tssRegion = c(-3000, 3000))
-load("~/Documents/10T_K36me2/data/QKO.R.data/ATACseq.overlap.K36me2.annotatedPeak.RData")
+load("~/Documents/10T_K36me2/data/RData/QKO/ATACseq.overlap.K36me2.annotatedPeak.RData")
 plotAnnoBar(p,title = "437 ATACseq peaks overlapping QKO K36me2 peaks")
 plotDistToTSS(p)
 ```
 
 # Over-representation Analysis - ATACseq peaks overlapping K36me2 Peaks = 437 peaks total {.tabset}
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-load(file="~/Documents/10T_K36me2/data/QKO.r.data/gost_results_ATACoverlappingK36me2.RData")
+load(file="~/Documents/10T_K36me2/data/RData/QKO/gost_results_ATACoverlappingK36me2.RData")
 g$result %>% dplyr::select(c("term_name", "intersection_size", "p_value")) %>% setnames(c("term_name","Count","p_value")) %>% dplyr::filter(Count > 10) %>% dplyr::arrange(p_value) %>%
   slice(1:10) %>% dplyr::arrange(desc(p_value)) %>%
   ggplot(aes(y = Count, x = factor(term_name, levels = term_name), fill = (p_value))) + 
@@ -136,4 +140,5 @@ g$result %>% as.data.frame() %>%
 # #
 # dotplot(ego,showCategory=10,title="Gene Ontology (GO)")
 ```
+
 

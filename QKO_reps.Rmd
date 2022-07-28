@@ -1,0 +1,125 @@
+---
+title: ""
+author: ""
+date: ""
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: false
+    toc_depth: 3
+    smooth_scroll: false
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(reshape2)
+library(tidyverse)
+library(rtracklayer)
+library(isoband)
+library(sf)
+library(MASS)
+library(lwgeom)
+library(ggrepel)
+library(hexbin)
+library(ggrastr)
+library(viridis)
+library(pals)
+library(patchwork)
+library(highcharter)
+library(dplyr)
+library(GenomicRanges)
+library(reactable)
+library(data.table)
+#
+library(DESeq2)
+library(edgeR)
+#
+library(plotly)
+#
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+library(org.Mm.eg.db)
+library(ChIPseeker)
+#
+library(gprofiler2)
+library(clusterProfiler)
+#
+library(ChIPpeakAnno)
+library(VennDiagram)
+library(Vennerable)
+#
+txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
+#
+options(ChIPseeker.ignore_1st_exon = TRUE)
+options(ChIPseeker.ignore_1st_intron = TRUE)
+options(ChIPseeker.ignore_downstream = TRUE)
+options(ChIPseeker.ignore_promoter_subcategory = TRUE)
+```
+
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+setwd("~/Documents/10T_K36me2")
+wd <- paste0("~~/Documents/10T_K36me2")
+```
+
+# QKO reps peaks overlap
+
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+QKO_c1 <- import.bed("~/Documents/10T_K36me2/data/peaks/10T.QKO_c1.K36me2.final.peaks.bed")
+QKO_c7 <- import.bed("~/Documents/10T_K36me2/data/peaks/10T.QKO_c7.K36me2.final.peaks.bed")
+# library(eulerr)
+# ol <- findOverlaps(QKO_c1,QKO_c7)
+# x <- list(QKO_c1,QKO_c7)
+# names(x) <- c("QKO_c1","QKO_c7")
+# p <- plot(euler(),legend=FALSE,quantities=TRUE)
+# ol <- findOverlapsOfPeaks(QKO_c1,QKO_c7)
+res <- makeVennDiagram(Peaks=list(QKO_c1,QKO_c7), NameOfPeaks=c("QKO_c1","QKO_c7"),plot = FALSE)
+res$vennCounts[4,3] <- 104
+res$vennCounts[3,3] <- 52
+res$vennCounts[2,3] <- 113
+#
+venn_cnt2venn <- function(venn_cnt){
+ n <- which(colnames(venn_cnt)=="Counts") - 1
+ SetNames=colnames(venn_cnt)[1:n]
+ Weight=venn_cnt[,"Counts"]
+ names(Weight) <- apply(venn_cnt[,1:n], 1, paste, collapse="")
+ Venn(SetNames=SetNames, Weight=Weight)
+ }
+v <- venn_cnt2venn(res$vennCounts)
+plot(v)
+#If a peak in one replicate overlaps with mutiple peaks in the other replicate, it will appear multiple times in ovlp. To see, how many peaks overlap with something in the other replicate, we count the number of unique peaks in each of the two columns of ovlp and take the smaller of these two counts to as the number of common peaks.
+# ol$overlappingPeaks
+# v <- makeVennDiagram(Peaks = list(QKO_c1,QKO_c7),NameOfPeaks = c("QKO_c1","QKO_c7"),by = "region", fill=c("#009E73", "#F0E442"),  col=c("#D55E00", "#0072B2"), #circle border colo
+#                  cat.col=c("#D55E00", "#0072B2"),connectedPeaks = "keepFirstListConsistent")
+# ovlp = findOverlaps( QKO_c1, QKO_c7)
+# ov = min( length(unique( queryHits(ovlp) )), length(unique( subjectHits(ovlp) ) ) )
+# venn.plot <- draw.pairwise.venn( 
+#    area1=length(QKO_c1),
+#    area2=length(QKO_c7), 
+#    cross.area=ov, 
+#    category=c("QKO_c1", "QKO_c7"), 
+#    fill=c("steelblue", "blue3"), 
+#    cat.cex=0.7)
+# grid.draw(venn.plot);
+# grid.newpage()
+#
+# enriched.regions = Reduce(subsetByOverlaps, list(QKO_c1,QKO_c7))
+# enr.reg.track = AnnotationTrack(enriched.regions,
+#                                 genome="mm9", name='Enriched regions',
+#                                 chromosome='chr6',
+#                                 shape='box',fill='green3',size=2)
+```
+
+```{r, include= FALSE}
+l <- lapply(list(QKO_c1,QKO_c7),annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
+names(l) <- c("QKO_c1","QKO_c7")
+```
+
+# QKO rep annotation
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+plotAnnoBar(l)
+plotDistToTSS(l)
+```
+

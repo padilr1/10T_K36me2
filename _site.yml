@@ -4,4 +4,6 @@ navbar:
   left:
     - text: "TKO & QKO"
       href: index.html
+    - text: "QKO reps"
+      href: QKO_reps.html
 output_dir: "docs"
