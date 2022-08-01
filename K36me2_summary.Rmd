@@ -94,7 +94,7 @@ pd %>%
 
 ## Correlation {.tabset}
 
-We can also take the same LFC enrichment matrix and check the correlation among samples
+We can also take the same log2 enrichment matrix and check the correlation among samples
 
 ### Pearson
 ```{r, out.height='900px', echo = FALSE, warning=FALSE,message=FALSE}
