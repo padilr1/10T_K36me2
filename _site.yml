@@ -6,4 +6,6 @@ navbar:
       href: index.html
     - text: "QKO reps"
       href: QKO_reps.html
+    - text: "10T K36me2 Summary"
+      href: K36me2_summary.html
 output_dir: "docs"

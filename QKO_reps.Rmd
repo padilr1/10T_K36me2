@@ -51,6 +51,22 @@ library(ChIPpeakAnno)
 library(VennDiagram)
 library(Vennerable)
 #
+library(pals)
+library(highcharter)
+library(plotly)
+library(heatmaply)
+# library(plotlyutils)
+library(htmltools)
+library(uwot)
+library(smacof)
+library(trelliscopejs)
+#library(LOLA)
+library(upsetjs)
+library(jsonlite)
+library(limma)
+library(crosstalk)
+library(DT)
+#
 txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
 #
 options(ChIPseeker.ignore_1st_exon = TRUE)
@@ -64,11 +80,250 @@ setwd("~/Documents/10T_K36me2")
 wd <- paste0("~~/Documents/10T_K36me2")
 ```
 
-# QKO reps peaks overlap
+# Peak stats
+
+## Number of peaks
 
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
 QKO_c1 <- import.bed("~/Documents/10T_K36me2/data/peaks/10T.QKO_c1.K36me2.final.peaks.bed")
 QKO_c7 <- import.bed("~/Documents/10T_K36me2/data/peaks/10T.QKO_c7.K36me2.final.peaks.bed")
+pks <- list(QKO_c1,QKO_c7)
+rx <- fread('~/Documents/10T_K36me2/data/rx/rx.final.csv')
+codr <- c('QKO')
+names(pks) <- c("QKO_c1","QKO_c7")
+rx$cond <- factor(rx$cond, codr)
+clrs <- setNames(tableau20()[seq(1,20,2)], codr)
+lapply(pks, function(x) tibble(y = length(x))) %>%
+  bind_rows(.id = 'samp') %>%
+  merge(rx) %>%
+  mutate(cond = factor(cond, codr)) %>%
+  arrange(cond, line, samp) %>%
+  mutate(samp = fct_inorder(samp)) %>%
+  dplyr::select(samp, cond, y) %>%
+  plot_ly(x = ~samp, y = ~y, type ='bar', color = ~cond, colors = clrs) %>%
+  layout(xaxis = list(title = NA),
+         yaxis = list(title = '# of peaks'))
+```
+
+## Width
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+plot_violin <- function(data, clrs = c("#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9",
+                                       "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"),
+                        lg = F) {
+  prepare_violin <- function(data) {
+    l <- lapply(names(data), function(name) {
+      series <- if (lg) {
+        log10(data[[name]]+1)
+      } else {
+        data[[name]]
+      }
+      index <- match(name, names(data)) - 1
+      density <- series %>% density()
+      multiplier <- 1 / (2.5 * max(density$y))
+      index
+      if (lg) {
+        tmp <- cbind(10^density$x - 1,
+              -multiplier * density$y + index,
+              multiplier * density$y + index)
+        tmp <- tmp[tmp[,1] > 0,]
+      } else {
+        cbind(density$x,
+             -multiplier * density$y + index,
+             multiplier * density$y + index)
+      }
+
+    })
+    names(l) <- names(data)
+    l
+  }
+
+  hc <- highchart() %>%
+    hc_plotOptions(chart = list(inverted = FALSE),
+                   line = list(linecap = 'square')) %>%
+    hc_yAxis(type = 'category',
+             min = 0,
+             max = length(data) - 1,
+             tickLength = 0,
+             categories = names(data),
+             labels = list(useHTML = TRUE,
+                           align = 'left',
+                           reserveSpace = TRUE),
+             lineWidth = 0,
+             lineColor = 'transparent') %>%
+    hc_legend(enabled = FALSE)
+
+  densities <- prepare_violin(data)
+    hc <- if (lg) {
+    hc_xAxis(hc, showFirstLabel = FALSE, type = "logarithmic",
+             min = max(sapply(densities, `[`, 1, 1)), startOnTick = F)
+  } else {
+    hc_xAxis(hc, showFirstLabel = FALSE)
+  }
+
+  niceDist <- function(num) {
+    if (num == 0) {
+      return('0 bp')
+    }
+    num <- 10*(num%/%10 + as.logical(num%%10))
+    nl <- log10(num)
+    s <- if (nl > 9) {
+      sprintf('%.1f Gbp', 10^(nl - 9))
+    } else if (nl > 6) {
+      sprintf('%.1f Mbp', 10^(nl - 6))
+    } else if (nl > 3) {
+      sprintf('%.1f Kbp', 10^(nl - 3))
+    }
+    return(s)
+  }
+
+  i <- 0
+  delta <- 0.1
+  for (name in names(data)) {
+    i <- i + 1
+    if (!is.null(data)) {
+      # compute violin plot
+      values <- data
+      max_density <- max(densities[[name]])
+
+      # add violin plot
+      hc <-  hc_add_series(hc, data = densities[[name]],
+                           type = 'areasplinerange',
+                           enableMouseTracking = FALSE,
+                           color = clrs[i],
+                           id =  name,
+                           lineColor = 'black',
+                           lineWidth = 2)
+
+      # compute percentiles 25, 50, 75
+      qs <- unname(as.numeric(quantile(data[[name]], c(0.25, 0.50, 0.75))))
+      big_left <- as.numeric(qs[1:2])
+      big_right <- as.numeric(qs[2:3])
+      
+      if (big_left[1] == 0) {
+        big_left[1] <- 1
+      }
+      if (big_left[2] == 0) {
+        big_left[2] <- big_right[1] <- 1
+      }
+      if (big_right[2] == 0) {
+        big_right[2] <- 1
+      }
+      # compute percentiles 5 and 95
+      small <- c(min(data[[name]][data[[name]] >= (big_left[1] - 1.5 * (big_right[2] - big_left[1]))], na.rm = T),
+                 max(data[[name]][data[[name]] <= (big_right[2] + 1.5 * (big_right[2] - big_left[1]))], na.rm = T))
+
+      sm <- small
+      if (lg) {
+        if (small[1] == 0) {
+          small[1] <- 1
+        }
+        if (small[2] == 0) {
+          small[2] <- 1
+        }
+      }
+      small <- cbind(small, c(i - 1, i - 1))
+
+      # add line spanning these percentiles
+      hc <- hc_add_series(hc, data = small,
+                          type = 'line',
+                          marker = list(symbol = "circle",
+                                        enabled = FALSE),
+                          color = "black",
+                          enableMouseTracking = FALSE,
+                          name = "whiskers",
+                          linkedTo = name,
+                          lineWidth = 2)
+
+      # prepare rectangles to show
+      big_left_rect <- cbind(big_left,
+                             c(i - 1 - delta,  i - 1 - delta),
+                             c(i - 1 + delta, i - 1 + delta))
+      big_left_rect <- rbind(c(big_left[1], i - 1, i - 1),
+                             big_left_rect)
+      big_left_rect <- rbind(big_left_rect,
+                             c(big_left[2], i - 1, i - 1))
+
+      big_right_rect <- cbind(big_right,
+                              c(i - 1 - delta,  i - 1 - delta),
+                              c(i - 1 + delta, i - 1 + delta))
+      big_right_rect <- rbind(c(big_right[1], i - 1, i - 1),
+                              big_right_rect)
+      big_right_rect <- rbind(big_right_rect,
+                              c(big_right[2], i - 1, i - 1))
+       big_center <- tibble(x = big_right[1], y = i - 1) %>%
+        rbind(., .) %>%
+        mutate(mi = as.numeric(sm[1]),
+               ma = as.numeric(sm[2]),
+               lo = qs[1],
+               hi = qs[3],
+               md = qs[2],
+               nm = name) %>%
+        list_parse()
+
+      # add rectangles
+      hc <- hc_add_series(hc, data = big_right_rect,
+                          type = 'areasplinerange',
+                          marker = list(symbol = 'circle',
+                                        enabled = FALSE),
+                          color = "white",
+                          fillOpacity = '100%',
+                          lineColor = "black",
+                          zIndex = 5,
+                          linkedTo = name,
+                          enableMouseTracking = FALSE,
+                          lineWidth = 2) %>%
+        hc_add_series(data = big_center,
+                      type = 'line',
+                      marker = list(symbol = "circle",
+                                    enabled = FALSE),
+                      color = clrs[i],
+                      zIndex = 10,
+                      linkedTo = name,
+                      lineWidth = 0) %>%
+        hc_add_series(data = big_left_rect,
+                      type = 'areasplinerange',
+                      marker = list(symbol = 'circle',
+                                    enabled = FALSE),
+                      color = "white",
+                      fillOpacity = '100%',
+                      lineColor = "black",
+                      linkedTo = name,
+                      zIndex = 5,
+                      enableMouseTracking = FALSE,
+                      lineWidth = 2)
+    }
+  }
+  hc %>%
+    hc_tooltip(formatter = JS("function(){
+        console.log(this);
+        return '<span style=\"font-size:10px\">' + this.point.options.nm + '</span><table>' + 
+            '<tr><td style=\"padding:0\"><b>Upper whisker</b>: </td><td style=\"padding:0\">' +
+            Highcharts.numberFormat(this.point.options.ma,2) + '</td></tr>' + 
+            '<tr><td style=\"padding:0\"><b>Q3</b>: </td><td style=\"padding:0\">' +
+            Highcharts.numberFormat(this.point.options.hi,2) + '</td></tr>' + 
+            '<tr><td style=\"padding:0\"><b>Median</b>: </td><td style=\"padding:0\">' +
+            Highcharts.numberFormat(this.point.options.md,2) + '</td></tr>' + 
+            '<tr><td style=\"padding:0\"><b>Q1</b>: </td><td style=\"padding:0\">' +
+            Highcharts.numberFormat(this.point.options.lo,2) + '</td></tr>' +
+            '<tr><td style=\"padding:0\"><b>Lower whisker</b>: </td><td style=\"padding:0\">' +
+            Highcharts.numberFormat(this.point.options.mi,2) + '</td></tr>' +
+            '</table>';
+    }"), useHTML = T)
+}
+
+arrange(rx, cond, line, samp) %>% 
+  pull(samp) %>%
+  intersect(names(pks)) %>%
+  pks[.] %>%
+  lapply(width) %>%
+  {plot_violin(., lg = T, clrs = unname(clrs[rx$cond[match(names(.), rx$samp)]]))} %>%
+  hc_size(height = 900) %>%
+  hc_xAxis(title = list(text = 'Width of enriched region'))
+```
+
+# QKO reps peaks overlap
+
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
 # library(eulerr)
 # ol <- findOverlaps(QKO_c1,QKO_c7)
 # x <- list(QKO_c1,QKO_c7)
@@ -76,9 +331,9 @@ QKO_c7 <- import.bed("~/Documents/10T_K36me2/data/peaks/10T.QKO_c7.K36me2.final.
 # p <- plot(euler(),legend=FALSE,quantities=TRUE)
 # ol <- findOverlapsOfPeaks(QKO_c1,QKO_c7)
 res <- makeVennDiagram(Peaks=list(QKO_c1,QKO_c7), NameOfPeaks=c("QKO_c1","QKO_c7"),plot = FALSE)
-res$vennCounts[4,3] <- 104
-res$vennCounts[3,3] <- 52
-res$vennCounts[2,3] <- 113
+res$vennCounts[4,3] <- 94
+res$vennCounts[3,3] <- 62
+res$vennCounts[2,3] <- 123
 #
 venn_cnt2venn <- function(venn_cnt){
  n <- which(colnames(venn_cnt)=="Counts") - 1
