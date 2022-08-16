@@ -76,6 +76,30 @@ options(ChIPseeker.ignore_1st_exon = TRUE)
 options(ChIPseeker.ignore_1st_intron = TRUE)
 options(ChIPseeker.ignore_downstream = TRUE)
 options(ChIPseeker.ignore_promoter_subcategory = TRUE)
+#
+knitr::knit_hooks$set(
+  error = function(x, options) {
+    paste('\n\n<div class="alert alert-danger">',
+          gsub('##', '\n', gsub('^##\ Error', '**Error**', x)),
+          '</div>', sep = '\n')
+  },
+  warning = function(x, options) {
+    paste('\n\n<div class="alert alert-warning">',
+          gsub('##', '\n', gsub('^##\ Warning:', '**Warning**', x)),
+          '</div>', sep = '\n')
+  },
+  message = function(x, options) {
+    paste('\n\n<div class="alert alert-info">',
+          gsub('##', '\n', x),
+          '</div>', sep = '\n')
+  }
+)
+knitr::opts_chunk$set(
+  echo = F,
+  message = F,
+  warning = F,
+  out.width = '100%'
+)
 ```
 
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
@@ -83,7 +107,12 @@ setwd("~/Documents/10T_K36me2")
 wd <- paste0("~~/Documents/10T_K36me2")
 ```
 
-# Distribution of QKO K36me2 residual peaks - 156 Total Peaks
+# QKO K36me2
+
+## Distribution
+
+<b> 156 Total Peaks </b>
+
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
 # b <- import.bed("~/Documents/TKO_QKO/data/span.models/10T.QKO_c1.K36me2.final.peaks.bed")
 # p <- annotatePeak(b,TxDb = txdb,tssRegion = c(-3000, 3000))
@@ -92,16 +121,16 @@ plotAnnoBar(p)
 plotDistToTSS(p)
 ```
 
-# Over-representation Analysis - K36me2 Peaks = 156 peaks total {.tabset}
+## Over-representation Analysis {.tabset}
 
-## KEGG Pathways
+### KEGG Pathways
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
 load(file="~/Documents/10T_K36me2/data/RData/QKO/kegg_results.RData")
 #
 clusterProfiler::dotplot(ekegg,title="KEGG pathways")
 ```
 
-## GO
+### GO
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
 load(file="~/Documents/10T_K36me2/data/RData/QKO/gost_results.RData")
 g$result %>% dplyr::select(c("term_name", "intersection_size", "p_value")) %>% setnames(c("term_name","Count","p_value")) %>% dplyr::filter(Count > 10) %>% dplyr::arrange(p_value) %>%
@@ -126,7 +155,20 @@ g$result %>% as.data.frame() %>%
 # dotplot(ego,showCategory=10,title="Gene Ontology (GO)")
 ```
 
-# Distribution of ATACseq peaks overlapping K36me2 peaks - 437 total peaks
+## Motif analysis
+
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+library(htmltools)
+htmltools::includeHTML('~/Documents/10T_K36me2/data/motif.output/QKO_c1.K36me2/knownResults.html')
+```
+
+---
+
+# ATAC peaks overlapping K36me2 peaks
+
+437 total peaks
+
+## Distribution
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
 # b <- import.bed("~/Documents/10T_K36me2/data/peaks/QKO_c1.K36me2.ATAC.bed")
 # p <- annotatePeak(b,TxDb = txdb,tssRegion = c(-3000, 3000))
@@ -135,7 +177,7 @@ plotAnnoBar(p,title = "437 ATACseq peaks overlapping QKO K36me2 peaks")
 plotDistToTSS(p)
 ```
 
-# Over-representation Analysis - ATACseq peaks overlapping K36me2 Peaks = 437 peaks total {.tabset}
+## Over-representation Analysis
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
 load(file="~/Documents/10T_K36me2/data/RData/QKO/gost_results_ATACoverlappingK36me2.RData")
 g$result %>% dplyr::select(c("term_name", "intersection_size", "p_value")) %>% setnames(c("term_name","Count","p_value")) %>% dplyr::filter(Count > 10) %>% dplyr::arrange(p_value) %>%
@@ -160,4 +202,9 @@ g$result %>% as.data.frame() %>%
 # dotplot(ego,showCategory=10,title="Gene Ontology (GO)")
 ```
 
+## Motif analysis
 
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+library(htmltools)
+htmltools::includeHTML('~/Documents/10T_K36me2/data/motif.output/QKO_c1.overlapATAC.longer.merged.sizeGiven/knownResults.html')
+```
