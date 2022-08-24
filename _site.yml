@@ -6,4 +6,6 @@ navbar:
       href: index.html
     - text: "QKO analysis"
       href: QKO_analysis.html
+    - text: "QKO-ATAC overlap motif analysis"
+      href: QKO_ATAC_ol_motifs.html
 output_dir: "docs"
