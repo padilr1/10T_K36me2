@@ -19,25 +19,16 @@ library(knitr)
 library(reshape2)
 library(tidyverse)
 library(rtracklayer)
-library(isoband)
-library(sf)
-library(MASS)
-library(lwgeom)
 library(ggrepel)
 library(hexbin)
 library(ggrastr)
 library(viridis)
 library(pals)
 library(patchwork)
-library(highcharter)
 library(dplyr)
 library(GenomicRanges)
 library(reactable)
 library(data.table)
-#
-library(DESeq2)
-library(edgeR)
-#
 library(plotly)
 #
 library(TxDb.Mmusculus.UCSC.mm10.knownGene)
@@ -51,24 +42,20 @@ library(ChIPpeakAnno)
 library(VennDiagram)
 library(Vennerable)
 #
-library(pals)
 library(highcharter)
-library(plotly)
 library(heatmaply)
-# library(plotlyutils)
 library(htmltools)
 library(uwot)
 library(smacof)
 library(trelliscopejs)
-#library(LOLA)
 library(upsetjs)
 library(jsonlite)
 library(limma)
 library(crosstalk)
 library(DT)
+library(xfun)
 #
 txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
-#
 options(ChIPseeker.ignore_1st_exon = TRUE)
 options(ChIPseeker.ignore_1st_intron = TRUE)
 options(ChIPseeker.ignore_downstream = TRUE)
@@ -80,11 +67,12 @@ setwd("~/Documents/10T_K36me2")
 wd <- paste0("~~/Documents/10T_K36me2")
 ```
 
-# Peak stats
+# QKO reps
 
-## Number of peaks
+## Peak stats {.tabset}
 
-```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+### Number of peaks
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='30%'}
 QKO_c1 <- import.bed("~/Documents/10T_K36me2/data/peaks/10T.QKO_c1.K36me2.final.peaks.bed")
 QKO_c7 <- import.bed("~/Documents/10T_K36me2/data/peaks/10T.QKO_c7.K36me2.final.peaks.bed")
 pks <- list(QKO_c1,QKO_c7)
@@ -105,8 +93,8 @@ lapply(pks, function(x) tibble(y = length(x))) %>%
          yaxis = list(title = '# of peaks'))
 ```
 
-## Width
-```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+### Width
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='40%'}
 plot_violin <- function(data, clrs = c("#7cb5ec", "#434348", "#90ed7d", "#f7a35c", "#8085e9",
                                        "#f15c80", "#e4d354", "#2b908f", "#f45b5b", "#91e8e1"),
                         lg = F) {
@@ -317,19 +305,26 @@ arrange(rx, cond, line, samp) %>%
   pks[.] %>%
   lapply(width) %>%
   {plot_violin(., lg = T, clrs = unname(clrs[rx$cond[match(names(.), rx$samp)]]))} %>%
-  hc_size(height = 900) %>%
+  hc_size(height = 500) %>%
   hc_xAxis(title = list(text = 'Width of enriched region'))
 ```
 
-# QKO reps peaks overlap
 
-```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-# library(eulerr)
-# ol <- findOverlaps(QKO_c1,QKO_c7)
-# x <- list(QKO_c1,QKO_c7)
-# names(x) <- c("QKO_c1","QKO_c7")
-# p <- plot(euler(),legend=FALSE,quantities=TRUE)
-# ol <- findOverlapsOfPeaks(QKO_c1,QKO_c7)
+## Distribution
+```{r, include= FALSE}
+# l <- lapply(list(QKO_c1,QKO_c7),annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
+# save(l,file="~/Documents/10T_K36me2/data/RData/annotation/QKO_c1.QKO_c7.annotation.RData")
+load("~/Documents/10T_K36me2/data/RData/annotation/QKO_c1.QKO_c7.annotation.RData")
+names(l) <- c("QKO_c1","QKO_c7")
+```
+
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='80%'}
+plotAnnoBar(l)
+plotDistToTSS(l)
+```
+
+## Overlap
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='70%'}
 res <- makeVennDiagram(Peaks=list(QKO_c1,QKO_c7), NameOfPeaks=c("QKO_c1","QKO_c7"),plot = FALSE)
 res$vennCounts[4,3] <- 94
 res$vennCounts[3,3] <- 62
@@ -344,37 +339,67 @@ venn_cnt2venn <- function(venn_cnt){
  }
 v <- venn_cnt2venn(res$vennCounts)
 plot(v)
-#If a peak in one replicate overlaps with mutiple peaks in the other replicate, it will appear multiple times in ovlp. To see, how many peaks overlap with something in the other replicate, we count the number of unique peaks in each of the two columns of ovlp and take the smaller of these two counts to as the number of common peaks.
-# ol$overlappingPeaks
-# v <- makeVennDiagram(Peaks = list(QKO_c1,QKO_c7),NameOfPeaks = c("QKO_c1","QKO_c7"),by = "region", fill=c("#009E73", "#F0E442"),  col=c("#D55E00", "#0072B2"), #circle border colo
-#                  cat.col=c("#D55E00", "#0072B2"),connectedPeaks = "keepFirstListConsistent")
-# ovlp = findOverlaps( QKO_c1, QKO_c7)
-# ov = min( length(unique( queryHits(ovlp) )), length(unique( subjectHits(ovlp) ) ) )
-# venn.plot <- draw.pairwise.venn( 
-#    area1=length(QKO_c1),
-#    area2=length(QKO_c7), 
-#    cross.area=ov, 
-#    category=c("QKO_c1", "QKO_c7"), 
-#    fill=c("steelblue", "blue3"), 
-#    cat.cex=0.7)
-# grid.draw(venn.plot);
-# grid.newpage()
-#
-# enriched.regions = Reduce(subsetByOverlaps, list(QKO_c1,QKO_c7))
-# enr.reg.track = AnnotationTrack(enriched.regions,
-#                                 genome="mm9", name='Enriched regions',
-#                                 chromosome='chr6',
-#                                 shape='box',fill='green3',size=2)
 ```
 
-```{r, include= FALSE}
-l <- lapply(list(QKO_c1,QKO_c7),annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
-names(l) <- c("QKO_c1","QKO_c7")
-```
+## Gene lists 
 
-# QKO rep annotation
+<i> Note: Some peaks are found closest to the TSS of the same gene, hence there are fewer genes than peaks </i>
+
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-plotAnnoBar(l)
-plotDistToTSS(l)
+gene_list <- data.frame(
+  type = c("QKO_c1","QKO_c7","union","intersect"),
+  total_peaks = c("156","217","269","94"),
+  unique_genes = c("110","139","177","69")
+) %>%
+  column_to_rownames("type")
+reactable(gene_list)
+```
+---
+```{r echo=FALSE}
+xfun::embed_file("~/Documents/10T_K36me2/data/peak.genes/QKO_c1.K36me2.genes.txt")
+```
+---
+```{r echo=FALSE}
+xfun::embed_file("~/Documents/10T_K36me2/data/peak.genes/QKO_c7.K36me2.genes.txt")
+```
+---
+```{r echo=FALSE}
+xfun::embed_file("~/Documents/10T_K36me2/data/peak.genes/QKO_union.K36me2.genes.txt")
+```
+---
+```{r echo=FALSE}
+xfun::embed_file("~/Documents/10T_K36me2/data/peak.genes/QKO_intersect.K36me2.genes.txt")
 ```
 
+---
+
+# Over-representation Analysis{.tabset}
+
+8862 unique genes (12242 peaks) from PA-K36me2 used as background
+
+## Union
+
+Peaks from QKO_c1 and QKO_c7 were pooled together. Then, bookended or any overlapping peaks were merged as a single peak.
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+load("~/Documents/10T_K36me2/data/RData/pathway_analysis/QKO_union_K36me2_pathway.analysis.RData")
+gostplot(pa$p)
+reactable(pa$reactable)
+```
+
+## Intersect
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+load("~/Documents/10T_K36me2/data/RData/pathway_analysis/QKO_intersect_K36me2_pathway.analysis.RData")
+gostplot(pa$p)
+reactable(pa$reactable)
+```
+
+---
+
+# Motif analysis
+
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
+library(htmltools)
+# htmltools::includeHTML('~/Documents/10T_K36me2/data/motif.output/QKO_c1.K36me2/knownResults.html')
+```
+
+---

@@ -1,11 +1,9 @@
 name: ""
 navbar:
-  title: "K36me2 in TKO/QKO"
+  title: "10T K36me2"
   left:
-    - text: "QKO analysis"
-      href: index.html
-    - text: "QKO reps"
-      href: QKO_reps.html
     - text: "10T K36me2 Summary"
-      href: K36me2_summary.html
+      href: index.html
+    - text: "QKO analysis"
+      href: QKO_analysis.html
 output_dir: "docs"

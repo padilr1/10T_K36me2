@@ -15,91 +15,42 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(knitr)
-library(reshape2)
+library(data.table)
 library(tidyverse)
 library(rtracklayer)
-library(isoband)
-library(sf)
-library(MASS)
-library(lwgeom)
-library(ggrepel)
-library(hexbin)
-library(ggrastr)
-library(viridis)
-library(pals)
-library(patchwork)
-library(highcharter)
-library(dplyr)
-library(GenomicRanges)
-library(reactable)
-library(data.table)
-#
-library(DESeq2)
-library(edgeR)
-#
-library(plotly)
-#
-library(TxDb.Mmusculus.UCSC.mm10.knownGene)
-library(org.Mm.eg.db)
-library(ChIPseeker)
-#
-library(gprofiler2)
-library(clusterProfiler)
-#
-library(ChIPpeakAnno)
-library(VennDiagram)
-library(Vennerable)
-#
 library(pals)
 library(highcharter)
 library(plotly)
 library(heatmaply)
-# library(plotlyutils)
+library(plotlyutils)
+library(plotly)
 library(htmltools)
 library(uwot)
 library(smacof)
 library(trelliscopejs)
-#library(LOLA)
+library(LOLA)
 library(upsetjs)
 library(jsonlite)
 library(limma)
 library(crosstalk)
 library(DT)
-#library(future)
+library(future)
+library(knitr)
+library(png)
 #plan(multisession(workers = 16))
-#library(furrr)
-#library(future.apply)
-txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
+library(furrr)
+library(future.apply)
+library(ggrepel)
+setwd("~/Documents/10T_K36me2")
 #
+library(ChIPseeker)
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+library(org.Mm.eg.db)
+txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
 options(ChIPseeker.ignore_1st_exon = TRUE)
 options(ChIPseeker.ignore_1st_intron = TRUE)
 options(ChIPseeker.ignore_downstream = TRUE)
 options(ChIPseeker.ignore_promoter_subcategory = TRUE)
-#
-knitr::knit_hooks$set(
-  error = function(x, options) {
-    paste('\n\n<div class="alert alert-danger">',
-          gsub('##', '\n', gsub('^##\ Error', '**Error**', x)),
-          '</div>', sep = '\n')
-  },
-  warning = function(x, options) {
-    paste('\n\n<div class="alert alert-warning">',
-          gsub('##', '\n', gsub('^##\ Warning:', '**Warning**', x)),
-          '</div>', sep = '\n')
-  },
-  message = function(x, options) {
-    paste('\n\n<div class="alert alert-info">',
-          gsub('##', '\n', x),
-          '</div>', sep = '\n')
-  }
-)
-knitr::opts_chunk$set(
-  echo = F,
-  message = F,
-  warning = F,
-  out.width = '100%'
-)
 ```
 
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
@@ -107,104 +58,104 @@ setwd("~/Documents/10T_K36me2")
 wd <- paste0("~~/Documents/10T_K36me2")
 ```
 
-# QKO K36me2
+# Mass-spec
 
-## Distribution
-
-<b> 156 Total Peaks </b>
-
-```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-# b <- import.bed("~/Documents/TKO_QKO/data/span.models/10T.QKO_c1.K36me2.final.peaks.bed")
-# p <- annotatePeak(b,TxDb = txdb,tssRegion = c(-3000, 3000))
-load("~/Documents/10T_K36me2/data/RData/QKO/annotatedPeak.QKO.RData")
-plotAnnoBar(p)
-plotDistToTSS(p)
+## K36 & K27
+```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+include_graphics(path = "~/Documents/10T_K36me2/images/10T.ms.graph.png",dpi = 600)
 ```
 
-## Over-representation Analysis {.tabset}
-
-### KEGG Pathways
-```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-load(file="~/Documents/10T_K36me2/data/RData/QKO/kegg_results.RData")
-#
-clusterProfiler::dotplot(ekegg,title="KEGG pathways")
+## K27 ratio
+```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+include_graphics(path = "~/Documents/10T_K36me2/images/10T.ms.graph.K27ratio.png",dpi = 600)
 ```
 
-### GO
-```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-load(file="~/Documents/10T_K36me2/data/RData/QKO/gost_results.RData")
-g$result %>% dplyr::select(c("term_name", "intersection_size", "p_value")) %>% setnames(c("term_name","Count","p_value")) %>% dplyr::filter(Count > 10) %>% dplyr::arrange(p_value) %>%
-  slice(1:10) %>% dplyr::arrange(desc(p_value)) %>%
-  ggplot(aes(y = Count, x = factor(term_name, levels = term_name), fill = (p_value))) + 
-  geom_bar(position = position_dodge(),stat = "identity") +
-  coord_flip() +
-  scale_fill_gradient(high="red",low = "blue", name = "FDR", trans = 'reverse') +
-  labs(x = "", title="",y ="Number of Genes") + 
-  theme(plot.title=element_text(face="bold",size=12), axis.title.y = element_text(size=10,face="bold"),axis.text.y = element_text(face = "bold",size = 8,colour = "black")) +
-  theme_bw()
-#
-g$result %>% as.data.frame() %>%
-  dplyr::filter(intersection_size > 2) %>% dplyr::arrange(p_value) %>%
-  dplyr::slice(1:10) %>% dplyr::arrange((intersection_size)) %>%
-  select("source", "term_name","intersection", "intersection_size","p_value") %>%
-  setnames(c("Source","Description","Genes","Count","FDR")) %>%
-  select(-Count) %>% map_df(rev) %>% reactable()
-#
-# load(file="~/Documents/TKO_QKO/data/QKO.r.data/ego_results.RData")
-# #
-# dotplot(ego,showCategory=10,title="Gene Ontology (GO)")
+## K4 & K9
+```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+include_graphics(path = "~/Documents/10T_K36me2/images/10T.ms.graph.K4me.K9me.png",dpi = 600)
 ```
 
-## Motif analysis
+# K36me2 10kb bins
 
-```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-library(htmltools)
-htmltools::includeHTML('~/Documents/10T_K36me2/data/motif.output/QKO_c1.K36me2/knownResults.html')
+```{r include=FALSE}
+rx <- fread("~/Documents/10T_K36me2/data/rx/rx.final.csv")
+
+md <- rx[,1:3] %>% column_to_rownames('samp')
+
+codr <- c("PA","QKO","TKO","SETD2KO","K36M","NSD12DKO","NSD3KO","NSD3")
 ```
 
----
 
-# ATAC peaks overlapping K36me2 peaks
+## PCA
 
-437 total peaks
-
-## Distribution
-```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-# b <- import.bed("~/Documents/10T_K36me2/data/peaks/QKO_c1.K36me2.ATAC.bed")
-# p <- annotatePeak(b,TxDb = txdb,tssRegion = c(-3000, 3000))
-load("~/Documents/10T_K36me2/data/RData/QKO/ATACseq.overlap.K36me2.annotatedPeak.RData")
-plotAnnoBar(p,title = "437 ATACseq peaks overlapping QKO K36me2 peaks")
-plotDistToTSS(p)
+We can use the log2 enrichment over input matrix as input to PCA (after scaling/centering)
+```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+load("~/Documents/10T_K36me2/data/RData/clustering/PCA.RData")
+pd %>%
+  ggplot(aes(x = `PC1 (43%)`, y = `PC2 (22%)`, color = cond)) +
+  geom_point(size = 3, show.legend = T) +
+  geom_text_repel(aes(label=samp),show.legend = FALSE) +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  xlab(label = "PC1 (43%)") +
+  ylab(labe = "PC2 (22%)")
 ```
 
-## Over-representation Analysis
-```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-load(file="~/Documents/10T_K36me2/data/RData/QKO/gost_results_ATACoverlappingK36me2.RData")
-g$result %>% dplyr::select(c("term_name", "intersection_size", "p_value")) %>% setnames(c("term_name","Count","p_value")) %>% dplyr::filter(Count > 10) %>% dplyr::arrange(p_value) %>%
-  slice(1:10) %>% dplyr::arrange(desc(p_value)) %>%
-  ggplot(aes(y = Count, x = factor(term_name, levels = term_name), fill = (p_value))) + 
-  geom_bar(position = position_dodge(),stat = "identity") +
-  coord_flip() +
-  scale_fill_gradient(high="red",low = "blue", name = "FDR", trans = 'reverse') +
-  labs(x = "", title="",y ="Number of Genes") + 
-  theme(plot.title=element_text(face="bold",size=12), axis.title.y = element_text(size=10,face="bold"),axis.text.y = element_text(face = "bold",size = 8,colour = "black")) +
-  theme_bw()
-#
-g$result %>% as.data.frame() %>%
-  dplyr::filter(intersection_size > 2) %>% dplyr::arrange(p_value) %>%
-  dplyr::slice(1:10) %>% dplyr::arrange((intersection_size)) %>%
-  select("source", "term_name","intersection", "intersection_size","p_value") %>%
-  setnames(c("Source","Description","Genes","Count","FDR")) %>%
-  select(-Count) %>% map_df(rev) %>% reactable()
-#
-# load(file="~/Documents/TKO_QKO/data/QKO.r.data/ego_results.RData")
-# #
-# dotplot(ego,showCategory=10,title="Gene Ontology (GO)")
+## Correlation {.tabset}
+
+We can also take the same log2 enrichment matrix and check the correlation among samples
+
+### Pearson
+```{r, out.height='900px', echo = FALSE, warning=FALSE,message=FALSE}
+load(file="~/Documents/10T_K36me2/data/RData/clustering/lfc.RData")
+cm <- cor(lfc_final, method = 'pearson')
+hm <- heatmaply_cor(cm, 
+                row_side_colors = md[rownames(cm),],
+                col_side_colors = md[colnames(cm),])
+
+hm$x$layout$annotations <- lapply(hm$x$layout$annotations, function(x) {
+  x$text <- ''
+})
+
+hm %>%
+  layout(height = 500)
 ```
 
-## Motif analysis
+### Spearman
 
-```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-library(htmltools)
-htmltools::includeHTML('~/Documents/10T_K36me2/data/motif.output/QKO_c1.overlapATAC.longer.merged.sizeGiven/knownResults.html')
+```{r, out.height='900px',echo = FALSE, warning=FALSE,message=FALSE}
+cm <- cor(lfc_final, method = 'spearman')
+hm <- heatmaply_cor(cm, 
+                row_side_colors = md[rownames(cm),],
+                col_side_colors = md[colnames(cm),])
+
+hm$x$layout$annotations <- lapply(hm$x$layout$annotations, function(x) {
+  x$text <- ''
+})
+
+hm %>%
+  layout(height = 500)
 ```
+
+# Peaks 
+
+We can also call enriched regions using [SICER](https://academic.oup.com/bioinformatics/article/25/15/1952/212783) as implemented in [epic2](https://academic.oup.com/bioinformatics/article/35/21/4392/5421513)
+
+## Annotation
+
+Peaks that are 10kb adjacent to another peak were merged within a sample. The intersect of replicates were then taken. 
+
+```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+# s <- list.files(path = "data/epic2.peaks.final", pattern = '.epic2.',full.names = FALSE,recursive = FALSE) %>%
+#   tibble(f = .) %>%
+#   separate(f,c("samp",NA,NA,NA),'\\.',F) %>%
+#   mutate(f = file.path('data/epic2.peaks.final', f))
+# d <- deframe(s[,c('samp', 'f')])
+# peak_annot <- lapply(d,annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
+load(file="~/Documents/10T_K36me2/data/RData/annotation/all_samples_annotation.RData")
+# peak_annot_final <- peak_annot[c("PA","NSD3_unedit","NSD3KO","SETD2KO","K36M","NSD12DKO","TKO","QKO")]
+plotAnnoBar(peak_annot_final)
+```
+
+
+
