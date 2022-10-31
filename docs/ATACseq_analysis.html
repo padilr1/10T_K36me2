@@ -35,6 +35,13 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="site_libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="site_libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="site_libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="site_libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -347,20 +354,25 @@ div.tocify {
 <h1>Distribution of ATAC-seq peaks</h1>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-1-1.png" width="100%" /></p>
 </div>
+<div id="pca" class="section level1">
+<h1>PCA</h1>
+<div id="htmlwidget-4af634846fb431291aed" style="width:100%;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-4af634846fb431291aed">{"x":{"visdat":{"233a31f92fe":["function () ","plotlyVisDat"]},"cur_data":"233a31f92fe","attrs":{"233a31f92fe":{"x":[-31.8397341200494,-31.9209003060315,17.1032533787394,19.5423798794809,14.3516903782002,12.7633107896604],"y":[0.732723885123169,0.619579426697174,6.69953144345515,6.17921901977061,-6.67208287193785,-7.55897090310827],"text":["parental-1","parental-2","TKO-1","TKO-dgNSD3_c10_unedited","QKO_c1","QKO_c7"],"mode":"markers","marker":{"size":11},"color":["PA","PA","TKO","TKO","QKO","QKO"],"colors":"Dark2","alpha_stroke":1,"sizes":[10,100],"spans":[1,20]}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"","xaxis":{"domain":[0,1],"automargin":true,"title":"PC1 ( 68.54%)"},"yaxis":{"domain":[0,1],"automargin":true,"title":"PC2 ( 16.84%)"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-31.8397341200494,-31.9209003060315],"y":[0.732723885123169,0.619579426697174],"text":["parental-1","parental-2"],"mode":"markers","marker":{"color":"rgba(27,158,119,1)","size":11,"line":{"color":"rgba(27,158,119,1)"}},"type":"scatter","name":"PA","textfont":{"color":"rgba(27,158,119,1)"},"error_y":{"color":"rgba(27,158,119,1)"},"error_x":{"color":"rgba(27,158,119,1)"},"line":{"color":"rgba(27,158,119,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[14.3516903782002,12.7633107896604],"y":[-6.67208287193785,-7.55897090310827],"text":["QKO_c1","QKO_c7"],"mode":"markers","marker":{"color":"rgba(217,95,2,1)","size":11,"line":{"color":"rgba(217,95,2,1)"}},"type":"scatter","name":"QKO","textfont":{"color":"rgba(217,95,2,1)"},"error_y":{"color":"rgba(217,95,2,1)"},"error_x":{"color":"rgba(217,95,2,1)"},"line":{"color":"rgba(217,95,2,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[17.1032533787394,19.5423798794809],"y":[6.69953144345515,6.17921901977061],"text":["TKO-1","TKO-dgNSD3_c10_unedited"],"mode":"markers","marker":{"color":"rgba(117,112,179,1)","size":11,"line":{"color":"rgba(117,112,179,1)"}},"type":"scatter","name":"TKO","textfont":{"color":"rgba(117,112,179,1)"},"error_y":{"color":"rgba(117,112,179,1)"},"error_x":{"color":"rgba(117,112,179,1)"},"line":{"color":"rgba(117,112,179,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
 <div id="volcano-plots" class="section level1 tabset">
 <h1 class="tabset">Volcano plots</h1>
 <p>These logfold changes were shrunken prior to plotting.</p>
 <div id="tko-v-pa" class="section level2">
 <h2>TKO v PA</h2>
-<p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-2-1.png" width="100%" /></p>
+<p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-3-1.png" width="100%" /></p>
 </div>
 <div id="qko-v-pa" class="section level2">
 <h2>QKO v PA</h2>
-<p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-3-1.png" width="100%" /></p>
+<p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-4-1.png" width="100%" /></p>
 </div>
 <div id="qko-v-tko" class="section level2">
 <h2>QKO v TKO</h2>
-<p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-4-1.png" width="100%" /></p>
+<p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-5-1.png" width="100%" /></p>
 </div>
 </div>
 

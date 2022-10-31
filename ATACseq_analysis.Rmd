@@ -94,6 +94,8 @@ volc <- function(r, x, y, ylab, ttl) {
 load("~/Documents/10T_K36me2/data/RData/ATACseq_counts/dds.RData")
 # load annot file
 load(file="~/Documents/10T_K36me2/data/RData/ATACseq_output/peak_annot.RData")
+load(file="~/Documents/10T_K36me2/data/RData/ATACseq_counts/vst.RData")
+load(file="~/Documents/10T_K36me2/data/RData/ATACseq_counts/mdat.RData")
 ```
 
 # Distribution of ATAC-seq peaks
@@ -105,6 +107,21 @@ load(file="~/Documents/10T_K36me2/data/RData/ATACseq_output/peak_annot.RData")
 # d <- deframe(s[,c('samp', 'f')])
 # peak_annot <- lapply(d,annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
 plotAnnoBar(peak_annot)
+```
+
+# PCA
+```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default", warning=FALSE,message=FALSE}
+rv <- rowVars(assay(vst))
+select <- order(rv, decreasing=T)[seq_len(min(500,length(rv)))]
+pc <- prcomp(t(assay(vst)[select,]))
+condition <- mdat$condition
+scores <- data.frame(pc$x, condition)
+percentage <- round(pc$sdev / sum(pc$sdev) * 100, 2)
+percentage <- paste( colnames(scores), "(", paste( as.character(percentage), "%", ")", sep="") )
+p <- plot_ly(scores,x=scores$PC1,y=scores$PC2,text=rownames(scores),mode="markers",color=factor(condition),marker=list(size=11),colors = "Dark2")
+p <- layout(p,title="",   xaxis = list(title = percentage[1]),
+            yaxis = list(title = percentage[2]))
+p
 ```
 
 # Volcano plots {.tabset}
