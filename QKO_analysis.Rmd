@@ -74,6 +74,12 @@ wd <- paste0("~~/Documents/10T_K36me2")
 ### Number of peaks
 ```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='30%'}
 QKO_c1 <- import.bed("~/Documents/10T_K36me2/data/peaks/10T.QKO_c1.K36me2.final.peaks.bed")
+#
+bl <- import.bed("~/Documents/10T_K36me2/ref/blacklist.bed")
+#
+check <- subsetByOverlaps(QKO_c1,bl)
+#
+#
 QKO_c7 <- import.bed("~/Documents/10T_K36me2/data/peaks/10T.QKO_c7.K36me2.final.peaks.bed")
 pks <- list(QKO_c1,QKO_c7)
 rx <- fread('~/Documents/10T_K36me2/data/rx/rx.final.csv')

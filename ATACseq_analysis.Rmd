@@ -1,0 +1,139 @@
+---
+title: ""
+author: ""
+date: ""
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: false
+    toc_depth: 3
+    smooth_scroll: false
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(reshape2)
+library(tidyverse)
+library(rtracklayer)
+library(isoband)
+library(sf)
+library(MASS)
+library(lwgeom)
+library(ggrepel)
+library(hexbin)
+library(ggplot2)
+library(ggrastr)
+library(viridis)
+library(pals)
+library(patchwork)
+library(highcharter)
+library(dplyr)
+library(GenomicRanges)
+library(reactable)
+library(data.table)
+#
+library(DESeq2)
+#
+library(plotly)
+#
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+library(org.Mm.eg.db)
+library(ChIPseeker)
+#
+txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
+#
+options(ChIPseeker.ignore_1st_exon = TRUE)
+options(ChIPseeker.ignore_1st_intron = TRUE)
+options(ChIPseeker.ignore_downstream = TRUE)
+options(ChIPseeker.ignore_promoter_subcategory = TRUE)
+```
+
+```{r Functions, include = FALSE}
+volc <- function(r, x, y, ylab, ttl) {
+  d <- as.data.frame(r) %>%
+    dplyr::rename(x = !!x, y = !!y) %>%
+    mutate(kind = case_when((x > 2 & y < .05) ~ 'FDR<0.05,log2FC>2',
+                            (x < -2 & y < .05) ~ 'FDR<0.05,log2FC<-2',
+                            0 < x & x < 2 & y < .05 ~ 'FDR<0.05,0<log2FC<2',
+                            -2 < x & x < 0 & y < .05 ~ 'FDR<0.05,-2<log2FC<0',
+                            T ~ 'NS'),
+           y = -log10(y))
+  ct_up <- d %>% 
+    dplyr::filter(kind == 'FDR<0.05,log2FC>2') %>%
+    mutate(up = x > 0) %>%
+    dplyr::count(up) %>%
+    mutate(x = ifelse(up, Inf, -Inf),
+           y = Inf,
+           h = as.numeric(up))
+  ct_down <- d %>% 
+    dplyr::filter(kind == 'FDR<0.05,log2FC<-2') %>%
+    mutate(up = x > 0) %>%
+    dplyr::count(up) %>%
+    mutate(x = ifelse(up, Inf, -Inf),
+           y = Inf,
+           h = as.numeric(up))
+  ggplot(d, aes(x, y, color = kind)) +
+    geom_vline(xintercept = c(-2, 2), linetype = 'dashed') +
+    geom_point(alpha = .5) +
+    geom_label(aes(x = x, y = y, label = n, hjust = h),
+              vjust = 1, data = ct_up, inherit.aes = F) + scale_y_continuous() + geom_label(aes(x = x, y = y, label = n, hjust = h),
+              vjust = 1, data = ct_down, inherit.aes = F) +
+    scale_color_manual(values = c('royalblue1','indianred1','blue','red','darkgrey')) +
+    labs(x = x, y = ylab, title = ttl) + theme(axis.line = element_line(colour = "black"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        legend.title = element_blank())
+}
+# load dds
+load("~/Documents/10T_K36me2/data/RData/ATACseq_counts/dds.RData")
+# load annot file
+load(file="~/Documents/10T_K36me2/data/RData/ATACseq_output/peak_annot.RData")
+```
+
+# Distribution of ATAC-seq peaks
+```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+# s <- list.files(path = "~/Documents/10T_K36me2/data/ATAC.IDR.pooled.peaks", pattern = '.idr.',full.names = FALSE,recursive = FALSE) %>%
+#   tibble(f = .) %>%
+#   separate(f,c("samp",NA,NA,NA),'\\.',F) %>%
+#   mutate(f = file.path('~/Documents/10T_K36me2/data/ATAC.IDR.pooled.peaks', f))
+# d <- deframe(s[,c('samp', 'f')])
+# peak_annot <- lapply(d,annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(peak_annot)
+```
+
+# Volcano plots {.tabset}
+
+These logfold changes were shrunken prior to plotting.
+
+## TKO v PA
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+resLFC <- lfcShrink(dds=dds, contrast=c("condition","TKO","PA"),type = "ashr") 
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','')
+# check direction of shrinkage
+# res <- results(dds,contrast = c("condition","TKO","PA"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+## QKO v PA
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+resLFC <- lfcShrink(dds=dds, contrast=c("condition","QKO","PA"),type = "ashr") 
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','')
+#
+# res <- results(dds,contrast = c("condition","QKO","PA"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+## QKO v TKO
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+resLFC <- lfcShrink(dds=dds, contrast=c("condition","QKO","TKO"),type = "ashr") 
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','')
+#
+# res <- results(dds,contrast = c("condition","QKO","TKO"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
