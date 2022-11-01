@@ -53,37 +53,44 @@ options(ChIPseeker.ignore_promoter_subcategory = TRUE)
 ```
 
 ```{r Functions, include = FALSE}
-volc <- function(r, x, y, ylab, ttl) {
+#output_path=paste0(outdir,"/hg38_50kb_GATC")
+# check <- paste('FDR<0.05,log2FC>',cutoff,sep = "",collapse = "")
+# check <- paste('FDR<0.05,log2FC<',cutoff,sep = "",collapse = "")
+# paste('FDR<0.05,0<log2FC<',cutoff,sep = "",collapse = "")
+# paste('FDR<0.05,0>log2FC>',cutoff,sep = "",collapse = "")
+#
+volc <- function(r, x, y, ylab,xlab, ttl,cutoff) {
   d <- as.data.frame(r) %>%
     dplyr::rename(x = !!x, y = !!y) %>%
-    mutate(kind = case_when((x > 2 & y < .05) ~ 'FDR<0.05,log2FC>2',
-                            (x < -2 & y < .05) ~ 'FDR<0.05,log2FC<-2',
-                            0 < x & x < 2 & y < .05 ~ 'FDR<0.05,0<log2FC<2',
-                            -2 < x & x < 0 & y < .05 ~ 'FDR<0.05,-2<log2FC<0',
+    mutate(kind = case_when((x > cutoff & y < .05) ~ paste('FDR<0.05,log2FC>',cutoff,sep = "",collapse = ""),
+                            (x < -cutoff & y < .05) ~ paste('FDR<0.05,log2FC<',-cutoff,sep = "",collapse = ""),
+                            -cutoff < x & x < 0 & y < .05 ~ paste('FDR<0.05,0>log2FC>',-cutoff,sep = "",collapse = ""),
+                            0 < x & x < cutoff & y < .05 ~ paste('FDR<0.05,0<log2FC<',cutoff,sep = "",collapse = ""),
                             T ~ 'NS'),
            y = -log10(y))
+  d$kind <- factor(d$kind, levels = c(paste('FDR<0.05,log2FC>',cutoff,sep = "",collapse = ""), paste('FDR<0.05,0<log2FC<',cutoff,sep = "",collapse = ""), paste('FDR<0.05,log2FC<',-cutoff,sep = "",collapse = ""),paste('FDR<0.05,0>log2FC>',-cutoff,sep = "",collapse = "")))
   ct_up <- d %>% 
-    dplyr::filter(kind == 'FDR<0.05,log2FC>2') %>%
+    dplyr::filter(kind == paste('FDR<0.05,log2FC>',cutoff,sep = "",collapse = "")) %>%
     mutate(up = x > 0) %>%
     dplyr::count(up) %>%
     mutate(x = ifelse(up, Inf, -Inf),
            y = Inf,
            h = as.numeric(up))
   ct_down <- d %>% 
-    dplyr::filter(kind == 'FDR<0.05,log2FC<-2') %>%
+    dplyr::filter(kind == paste('FDR<0.05,log2FC<',-cutoff,sep = "",collapse = "")) %>%
     mutate(up = x > 0) %>%
     dplyr::count(up) %>%
     mutate(x = ifelse(up, Inf, -Inf),
            y = Inf,
            h = as.numeric(up))
   ggplot(d, aes(x, y, color = kind)) +
-    geom_vline(xintercept = c(-2, 2), linetype = 'dashed') +
+    geom_vline(xintercept = c(-cutoff, cutoff), linetype = 'dashed') +
     geom_point(alpha = .5) +
     geom_label(aes(x = x, y = y, label = n, hjust = h),
               vjust = 1, data = ct_up, inherit.aes = F) + scale_y_continuous() + geom_label(aes(x = x, y = y, label = n, hjust = h),
               vjust = 1, data = ct_down, inherit.aes = F) +
-    scale_color_manual(values = c('royalblue1','indianred1','blue','red','darkgrey')) +
-    labs(x = x, y = ylab, title = ttl) + theme(axis.line = element_line(colour = "black"),
+    scale_color_manual(values = c('red','indianred1','blue','royalblue1','darkgrey')) +
+    labs(x = xlab, y = ylab, title = ttl) + theme(axis.line = element_line(colour = "black"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
@@ -96,6 +103,21 @@ load("~/Documents/10T_K36me2/data/RData/ATACseq_counts/dds.RData")
 load(file="~/Documents/10T_K36me2/data/RData/ATACseq_output/peak_annot.RData")
 load(file="~/Documents/10T_K36me2/data/RData/ATACseq_counts/vst.RData")
 load(file="~/Documents/10T_K36me2/data/RData/ATACseq_counts/mdat.RData")
+# seq info
+keep <- fread("~/Documents/10T_K36me2/ref/mm10.chrom.sizes") %>%
+  setNames(c("chr","seqlength"))
+gn <- keep %>% {Seqinfo(.$chr, .$seqlength)}
+```
+
+# Number of peaks per sample (IDR-pooled)
+```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+num_of_peaks <- data.frame(
+  "PA" = 32305,
+  "TKO" = 33323,
+  "QKO" = 26636
+)
+rownames(num_of_peaks) <- "Number_of_Peaks"
+num_of_peaks %>% reactable
 ```
 
 # Distribution of ATAC-seq peaks
@@ -128,29 +150,577 @@ p
 
 These logfold changes were shrunken prior to plotting.
 
-## TKO v PA
+## TKO v PA {.tabset}
+
+### |log2FC| > 1
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
 resLFC <- lfcShrink(dds=dds, contrast=c("condition","TKO","PA"),type = "ashr") 
-volc(resLFC,'log2FoldChange','padj','-log10(FDR)','')
+volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cutoff = 1)
+# check direction of shrinkage
+# res <- results(dds,contrast = c("condition","TKO","PA")) 
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+### |log2FC| > 2
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cutoff = 2)
 # check direction of shrinkage
 # res <- results(dds,contrast = c("condition","TKO","PA"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
 ```
 
-## QKO v PA
+### |log2FC| > 2.5
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cutoff = 2.5)
+# check direction of shrinkage
+# res <- results(dds,contrast = c("condition","TKO","PA"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+### |log2FC| > 3
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cutoff = 3)
+# check direction of shrinkage
+# res <- results(dds,contrast = c("condition","TKO","PA"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+### |log2FC| > 4
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cutoff = 4)
+# check direction of shrinkage
+# res <- results(dds,contrast = c("condition","TKO","PA"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+## QKO v PA {.tabset}
+
+### |log2FC| > 1
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
 resLFC <- lfcShrink(dds=dds, contrast=c("condition","QKO","PA"),type = "ashr") 
-volc(resLFC,'log2FoldChange','padj','-log10(FDR)','')
+volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cutoff = 1)
 #
 # res <- results(dds,contrast = c("condition","QKO","PA"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
 ```
 
-## QKO v TKO
+### |log2FC| > 2
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cutoff = 2)
+#
+# res <- results(dds,contrast = c("condition","QKO","PA"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+### |log2FC| > 2.5
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cutoff = 2.5)
+#
+# res <- results(dds,contrast = c("condition","QKO","PA"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+### |log2FC| > 3
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cutoff = 3)
+#
+# res <- results(dds,contrast = c("condition","QKO","PA"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+### |log2FC| > 4
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cutoff = 4)
+#
+# res <- results(dds,contrast = c("condition","QKO","PA"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+## QKO v TKO {.tabset}
+
+### |log2FC| > 1
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
 resLFC <- lfcShrink(dds=dds, contrast=c("condition","QKO","TKO"),type = "ashr") 
-volc(resLFC,'log2FoldChange','padj','-log10(FDR)','')
+volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cutoff = 1)
 #
 # res <- results(dds,contrast = c("condition","QKO","TKO"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+### |log2FC| > 2
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cutoff = 2)
+#
+# res <- results(dds,contrast = c("condition","QKO","TKO"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+### |log2FC| > 2.5
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cutoff = 2.5)
+#
+# res <- results(dds,contrast = c("condition","QKO","TKO"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+### |log2FC| > 3
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cutoff = 3)
+#
+# res <- results(dds,contrast = c("condition","QKO","TKO"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+### |log2FC| > 4
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cutoff = 4)
+#
+# res <- results(dds,contrast = c("condition","QKO","TKO"))
+# volc(res,'log2FoldChange','padj','-log10(FDR)','')
+```
+
+# MA plots {.tabset}
+
+Points will be colored blue if the adjusted p value is less than 0.05. Points which fall out of the window are plotted as open triangles pointing either up or down.
+
+## TKO v PA
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+resLFC <- lfcShrink(dds=dds, contrast=c("condition","TKO","PA"),type = "ashr")
+#
+plotMA(resLFC, ylim=c(-7,7),ylab="log2FoldChange (TKO/PA)",colSig="blue",xlab="Mean of Normalized Counts",alpha=0.05)
+```
+
+## QKO v PA
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+resLFC <- lfcShrink(dds=dds, contrast=c("condition","QKO","PA"),type = "ashr")
+#
+plotMA(resLFC, ylim=c(-7,7),ylab="log2FoldChange (QKO/PA)",colSig="blue",xlab="Mean of Normalized Counts",alpha=0.05)
+```
+
+## QKO v TKO
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+resLFC <- lfcShrink(dds=dds, contrast=c("condition","QKO","TKO"),type = "ashr")
+#
+plotMA(resLFC, ylim=c(-7,7),ylab="log2FoldChange (QKO/TKO)",colSig="blue",xlab="Mean of Normalized Counts",alpha=0.05)
+```
+
+# Feature distribution {.tabset}
+
+For all differential peaks, padj < 0.05 was used with different log2FC as indicates below.
+
+## TKO v PA {.tabset}
+
+### Cutoff=1 {.tabset}
+
+#### log2FC > 1
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","TKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange > 1) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+#### log2FC < -1
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","TKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange < -1) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+### Cutoff=2 {.tabset}
+
+#### log2FC > 2
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","TKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange > 2) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+#### log2FC < -2
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","TKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange < -2) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+### Cutoff=3 {.tabset}
+
+#### log2FC > 3
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","TKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange > 3) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+#### log2FC < -3
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","TKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange < -3) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+### Cutoff=4 {.tabset}
+
+#### log2FC > 4
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","TKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange > 4) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+#### log2FC < -4
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","TKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange < -4) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+## QKO v PA {.tabset}
+
+### Cutoff=1 {.tabset}
+
+#### log2FC > 1
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange > 1) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+#### log2FC < -1
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange < -1) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+### Cutoff=2 {.tabset}
+
+#### log2FC > 2
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange > 2) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+#### log2FC < -2
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange < -2) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+### Cutoff=3 {.tabset}
+
+#### log2FC > 3
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange > 3) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+#### log2FC < -3
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange < -3) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+### Cutoff=4 {.tabset}
+
+#### log2FC > 4
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange > 4) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+#### log2FC < -4
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","PA")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange < -4) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+## QKO v TKO {.tabset}
+
+### Cutoff=1 {.tabset}
+
+#### log2FC > 1
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","TKO")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange > 1) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+#### log2FC < -1
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","TKO")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange < -1) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+### Cutoff=2 {.tabset}
+
+#### log2FC > 2
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","TKO")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange > 2) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+#### log2FC < -2
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","TKO")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange < -2) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+### Cutoff=3 {.tabset}
+
+#### log2FC > 3
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","TKO")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange > 3) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+#### log2FC < -3
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","TKO")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange < -3) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+### Cutoff=4 {.tabset}
+
+#### log2FC > 4
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","TKO")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange > 4) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
+```
+
+#### log2FC < -4
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+#
+res <- results(dds,contrast = c("condition","QKO","TKO")) %>% as.data.frame() %>%
+  dplyr::filter(padj < 0.05 & log2FoldChange < -4) %>%
+  rownames_to_column("coordinates") %>%
+  separate(col = coordinates,into = c("chr","start","end"))
+res$chr <- as.character(res$chr) 
+res$start <- as.integer(res$start)
+res$end <- as.integer(res$end)
+res <- na.omit(res)
+bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
+ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
+plotAnnoBar(ann)
 ```
