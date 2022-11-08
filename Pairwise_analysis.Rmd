@@ -78,13 +78,13 @@ ps$`10T`
 
 # NSD2KO v PA {.tabset}
 
-## NSD2KO_c5 V PA
+## NSD2KO_c5 v PA
 ```{r, NSD2KO_C5, echo=FALSE, fig.height=3, fig.width=8, message=FALSE, warning=FALSE}
 load("~/Documents/10T_K36me2/plots/10T.PA_1.NSD2KO_c5.K36me2.clus.fig.rda")
 ps$`10T`
 ```
 
-## NSD2KO_c5 V PA
+## NSD2KO_c9 v PA
 ```{r, NSD2KO_C9, echo=FALSE, fig.height=3, fig.width=8, message=FALSE, warning=FALSE}
 load("~/Documents/10T_K36me2/plots/10T.PA_1.NSD2KO_c9.K36me2.clus.fig.rda")
 ps$`10T`
