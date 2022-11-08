@@ -1,0 +1,98 @@
+---
+title: ""
+author: ""
+date: ""
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: false
+    toc_depth: 3
+    smooth_scroll: false
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(reshape2)
+library(tidyverse)
+library(rtracklayer)
+library(isoband)
+library(sf)
+library(MASS)
+library(lwgeom)
+library(ggrepel)
+library(hexbin)
+library(ggplot2)
+library(ggrastr)
+library(viridis)
+library(pals)
+library(patchwork)
+library(highcharter)
+library(dplyr)
+library(GenomicRanges)
+library(reactable)
+library(data.table)
+#
+library(DESeq2)
+#
+library(plotly)
+#
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+library(org.Mm.eg.db)
+library(ChIPseeker)
+#
+txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
+#
+options(ChIPseeker.ignore_1st_exon = TRUE)
+options(ChIPseeker.ignore_1st_intron = TRUE)
+options(ChIPseeker.ignore_downstream = TRUE)
+options(ChIPseeker.ignore_promoter_subcategory = TRUE)
+```
+
+## Pairwise comparison 
+
+Samples were binned into 10kb windows and normalized using ChIP-Rx
+
+# PA_1 v PA_3
+```{r, par, echo=FALSE, fig.height=3, fig.width=8, message=FALSE, warning=FALSE}
+load("~/Documents/10T_K36me2/plots/10T.PA_1.PA_3.K36me2.clus.fig.rda")
+ps$`10T`
+```
+
+# NSD1KO v PA {.tabset}
+
+## NSD1KO_c1 v PA
+```{r, NSD1KO_C1, echo=FALSE, fig.height=3, fig.width=8, message=FALSE, warning=FALSE}
+load("~/Documents/10T_K36me2/plots/10T.PA_1.NSD1KO_c1.K36me2.clus.fig.rda")
+ps$`10T`
+```
+
+## NSD1KO_c6 v PA
+```{r, NSD1KO_C6, echo=FALSE, fig.height=3, fig.width=8, message=FALSE, warning=FALSE}
+load("~/Documents/10T_K36me2/plots/10T.PA_1.NSD1KO_c6.K36me2.clus.fig.rda")
+ps$`10T`
+```
+
+# NSD2KO v PA {.tabset}
+
+## NSD2KO_c5 V PA
+```{r, NSD2KO_C5, echo=FALSE, fig.height=3, fig.width=8, message=FALSE, warning=FALSE}
+load("~/Documents/10T_K36me2/plots/10T.PA_1.NSD2KO_c5.K36me2.clus.fig.rda")
+ps$`10T`
+```
+
+## NSD2KO_c5 V PA
+```{r, NSD2KO_C9, echo=FALSE, fig.height=3, fig.width=8, message=FALSE, warning=FALSE}
+load("~/Documents/10T_K36me2/plots/10T.PA_1.NSD2KO_c9.K36me2.clus.fig.rda")
+ps$`10T`
+```
+
+# NSD12DKO_1 v PA_1
+```{r, NSD12DKO_1, echo=FALSE, fig.height=3, fig.width=8, message=FALSE, warning=FALSE}
+load("~/Documents/10T_K36me2/plots/10T.PA_1.NSD12DKO_1.K36me2.clus.fig.rda")
+ps$`10T`
+```
+

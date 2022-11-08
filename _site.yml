@@ -8,4 +8,6 @@ navbar:
       href: QKO_analysis.html
     - text: "ATAC-seq analysis"
       href: ATACseq_analysis.html
+    - text: "Pairwise analysis"
+      href: Pairwise_analysis.html
 output_dir: "docs"

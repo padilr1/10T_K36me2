@@ -22,13 +22,13 @@ library(pals)
 library(highcharter)
 library(plotly)
 library(heatmaply)
-library(plotlyutils)
+# library(plotlyutils)
 library(plotly)
 library(htmltools)
 library(uwot)
 library(smacof)
 library(trelliscopejs)
-library(LOLA)
+# library(LOLA)
 library(upsetjs)
 library(jsonlite)
 library(limma)
@@ -36,6 +36,7 @@ library(crosstalk)
 library(DT)
 library(future)
 library(knitr)
+library(reactable)
 library(png)
 #plan(multisession(workers = 16))
 library(furrr)
@@ -82,23 +83,22 @@ rx <- fread("~/Documents/10T_K36me2/data/rx/rx.final.csv")
 
 md <- rx[,1:3] %>% column_to_rownames('samp')
 
-codr <- c("PA","QKO","TKO","SETD2KO","K36M","NSD12DKO","NSD3KO","NSD3")
+codr <- c("PA","QKO","TKO","SETD2KO","K36M","NSD12DKO","NSD3KO","NSD3_unedit","NSD1KO","NSD2KO")
 ```
-
 
 ## PCA
 
-We can use the log2 enrichment over input matrix as input to PCA (after scaling/centering)
 ```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
-load("~/Documents/10T_K36me2/data/RData/clustering/PCA.RData")
+load("~/Documents/10T_K36me2/data/RData/PCA/PCA.RData")
 pd %>%
-  ggplot(aes(x = `PC1 (43%)`, y = `PC2 (22%)`, color = cond)) +
+  ggplot(aes(x = pd[,2], y = pd[,3], color = cond)) +
   geom_point(size = 3, show.legend = T) +
   geom_text_repel(aes(label=samp),show.legend = FALSE) +
   geom_hline(yintercept = 0) +
   geom_vline(xintercept = 0) +
-  xlab(label = "PC1 (43%)") +
-  ylab(labe = "PC2 (22%)")
+  xlab(label = paste(colnames(pd[2]))) +
+  ylab(label = paste(colnames(pd[3]))) +
+  labs(title = "log2 K36me2 enrichment over input scaled with ChIP-Rx")
 ```
 
 ## Correlation {.tabset}
@@ -107,7 +107,7 @@ We can also take the same log2 enrichment matrix and check the correlation among
 
 ### Pearson
 ```{r, out.height='900px', echo = FALSE, warning=FALSE,message=FALSE}
-load(file="~/Documents/10T_K36me2/data/RData/clustering/lfc.RData")
+load(file="~/Documents/10T_K36me2/data/RData/heatmap/lfc_final.RData")
 cm <- cor(lfc_final, method = 'pearson')
 hm <- heatmaply_cor(cm, 
                 row_side_colors = md[rownames(cm),],
@@ -137,25 +137,90 @@ hm %>%
   layout(height = 500)
 ```
 
-# Peaks 
+# Peaks
 
 We can also call enriched regions using [SICER](https://academic.oup.com/bioinformatics/article/25/15/1952/212783) as implemented in [epic2](https://academic.oup.com/bioinformatics/article/35/21/4392/5421513)
 
-## Annotation
+## Number of peaks {.tabset}
+
+### Unmerged
+
+```{r,unmerged_table,number of peaks,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+peaks_df <- data.frame(
+  PA_1 = 14865,
+  PA_3 = 15490,
+  NSD3_unedit = 13321,
+  NSD1KO_c1 = 12579,
+  NSD1KO_c6 = 12770,
+  NSD2KO_c5 = 17834,
+  NSD2KO_c9 = 16014,
+  NSD3KO_c3 = 18454,
+  NSD3KO_c4 = 15742,
+  NSD3KO_c12 = 18017,
+  SETD2KO = 16533,
+  NSD12DKO_1 = 12540,
+  NSD12DKO_2 = 12540,
+  TKO_unedit = 16079,
+  TKO = 12497,
+  QKO_c1 = 3311,
+  QKO_c7 = 3156,
+  K36M = 9129
+)
+final_df <- pivot_longer(peaks_df,cols = c(1:18))
+colnames(final_df) <- c("sample","#_of_peaks")
+final_df %>%
+  reactable()
+```
+
+### Merged reps
 
 Peaks that are 10kb adjacent to another peak were merged within a sample. The intersect of replicates were then taken. 
 
-```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
-# s <- list.files(path = "data/epic2.peaks.final", pattern = '.epic2.',full.names = FALSE,recursive = FALSE) %>%
+```{r,merged_table,number of peaks,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+peaks_df <- data.frame(
+  PA = 12349,
+  NSD1KO = 10040,
+  NSD2KO = 13279,
+  NSD3KO = 13949,
+  NSD12DKO = 12540,
+  TKO = 12497,
+  QKO = 1293
+)
+final_df <- pivot_longer(peaks_df,cols = c(1:7))
+colnames(final_df) <- c("sample","#_of_peaks")
+final_df %>%
+  reactable()
+```
+
+## Peak distribution {.tabset}
+
+### Unmerged reps
+
+```{r,merged,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+# s <- list.files(path = "~/Documents/10T_K36me2/data/epic2.peaks.final/unmerged_reps", pattern = '.epic2.',full.names = FALSE,recursive = FALSE) %>%
 #   tibble(f = .) %>%
 #   separate(f,c("samp",NA,NA,NA),'\\.',F) %>%
-#   mutate(f = file.path('data/epic2.peaks.final', f))
+#   mutate(f = file.path('~/Documents/10T_K36me2/data/epic2.peaks.final/unmerged_reps', f))
 # d <- deframe(s[,c('samp', 'f')])
 # peak_annot <- lapply(d,annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
-load(file="~/Documents/10T_K36me2/data/RData/annotation/all_samples_annotation.RData")
-# peak_annot_final <- peak_annot[c("PA","NSD3_unedit","NSD3KO","SETD2KO","K36M","NSD12DKO","TKO","QKO")]
+load(file="~/Documents/10T_K36me2/data/epic2.peaks.final/unmerged_reps/all_samples_annotation.RData")
+peak_annot_final <- peak_annot[c("PA_1","PA_3","NSD3_unedit","NSD1KO_c1","NSD1KO_c6","NSD2KO_c5","NSD2KO_c9","NSD3KO_c3","NSD3KO_c4","NSD3KO_c12","SETD2KO","NSD12DKO_1","NSD12DKO_2","TKO_unedit","TKO","QKO_c1","QKO_c7","K36M")]
 plotAnnoBar(peak_annot_final)
 ```
 
+### Merged reps
 
+Peaks that are 10kb adjacent to another peak were merged within a sample. The intersect of replicates were then taken. 
+
+```{r, unmerged,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+# s <- list.files(path = "~/Documents/10T_K36me2/data/epic2.peaks.final/merged_reps", pattern = '.epic2.',full.names = FALSE,recursive = FALSE) %>%
+#   tibble(f = .) %>%
+#   separate(f,c("samp",NA,NA,NA),'\\.',F) %>%
+#   mutate(f = file.path('~/Documents/10T_K36me2/data/epic2.peaks.final/merged_reps', f))
+# d <- deframe(s[,c('samp', 'f')])
+# peak_annot <- lapply(d,annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
+load(file="~/Documents/10T_K36me2/data/epic2.peaks.final/merged_reps/merged_samples_annotation.RData")
+peak_annot_final <- peak_annot[c("PA","NSD1KO","NSD2KO","NSD3KO","NSD12DKO","TKO","QKO")]
+plotAnnoBar(peak_annot_final)
+```
 
