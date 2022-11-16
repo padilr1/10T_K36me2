@@ -1,0 +1,103 @@
+---
+title: ""
+author: ""
+date: ""
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    collapsed: false
+    number_sections: false
+    toc_depth: 3
+    smooth_scroll: false
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(reshape2)
+library(tidyverse)
+library(rtracklayer)
+library(isoband)
+library(sf)
+library(MASS)
+library(lwgeom)
+library(ggrepel)
+library(hexbin)
+library(ggplot2)
+library(ggrastr)
+library(viridis)
+library(pals)
+library(patchwork)
+library(highcharter)
+library(dplyr)
+library(GenomicRanges)
+library(reactable)
+library(data.table)
+#
+library(DESeq2)
+#
+library(plotly)
+#
+library(TxDb.Mmusculus.UCSC.mm10.knownGene)
+library(org.Mm.eg.db)
+library(ChIPseeker)
+#
+txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
+#
+options(ChIPseeker.ignore_1st_exon = TRUE)
+options(ChIPseeker.ignore_1st_intron = TRUE)
+options(ChIPseeker.ignore_downstream = TRUE)
+options(ChIPseeker.ignore_promoter_subcategory = TRUE)
+```
+
+```{r,load_objects,include=FALSE}
+# K36me2 peaks
+Lost.K36me2.in.TKO <- import.bed("~/Documents/10T_K36me2/data/Lost.K36me2.regions/PA_subtracted_by_TKO.bed")
+Remaining.K36me2.in.TKO <- import.bed("~/Documents/10T_K36me2/data/epic2.peaks.final/merged_reps/TKO.ol.epic2.bed")
+# ATACseq peaks
+closed_peaks <- import.bed("~/Documents/10T_K36me2/regionDB/mm10/ATACpeaks/regions/closed_ATACpeaks.bed")
+open_peaks <- import.bed("~/Documents/10T_K36me2/regionDB/mm10/ATACpeaks/regions/open_ATACpeaks.bed")
+all_peaks <- import.bed("~/Documents/10T_K36me2/regionDB/mm10/ATACpeaks/regions/all_ATACpeaks.bed")
+######## distribution of lost K36me2 peaks vs remaining K36me2 peaks ######
+# l <- list(Remaining_K36me2_in_TKO=Remaining.K36me2.in.TKO,Lost_K36me2_in_TKO=Lost.K36me2.in.TKO)
+# peak_annot <- lapply(l,annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
+# save(peak_annot,file="~/Documents/10T_K36me2/data/RData/annotation/lost_remaining_K36me2_TKO.RData")
+# plotAnnoBar(peak_annot)
+# #
+# l <- list(all_peaks=all_peaks,closed_peaks=closed_peaks,open_peaks=open_peaks)
+# peak_annot <- lapply(l,annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
+# plotAnnoBar(peak_annot)
+# save(peak_annot,file="~/Documents/10T_K36me2/data/RData/annotation/differential_ATAC_peaks_TKO.RData")
+```
+
+# Table of overlap
+```{r,table_ol,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+df <- read.csv("~/Documents/10T_K36me2/data/Lost.K36me2.regions/ol.ATAC.K36me2.table.csv") %>%
+  column_to_rownames("X")
+reactable(df)
+```
+
+# Distribution {.tabset}
+
+## H3K36me2
+```{r,K36me2_distribution,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+load(file="~/Documents/10T_K36me2/data/RData/annotation/lost_remaining_K36me2_TKO.RData")
+plotAnnoBar(peak_annot)
+```
+
+## ATACseq peaks
+```{r,ATAC_seq_distribution,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+load("~/Documents/10T_K36me2/data/RData/annotation/differential_ATAC_peaks_TKO.RData")
+plotAnnoBar(peak_annot)
+```
+
+# ChIP signal 
+
+ChIP signal was centered on ATACseq peaks.
+
+```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+imageList <- list.files("~/Documents/10T_K36me2/data/differential.ATACseq.regions", pattern= "*ATAC.profile.png", full.names=T)
+include_graphics(imageList,dpi = 600)
+```

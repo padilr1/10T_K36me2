@@ -10,4 +10,6 @@ navbar:
       href: ATACseq_analysis.html
     - text: "Pairwise analysis"
       href: Pairwise_analysis.html
+    - text: "Differential ATAC"
+      href: differential_atac.html
 output_dir: "docs"

@@ -109,6 +109,97 @@ keep <- fread("~/Documents/10T_K36me2/ref/mm10.chrom.sizes") %>%
 gn <- keep %>% {Seqinfo(.$chr, .$seqlength)}
 ```
 
+```{r,work,include=FALSE}
+# create granges of closed peaks
+# res <- results(dds,contrast = c("condition","TKO","PA")) %>% as.data.frame() %>%
+#   rownames_to_column("coordinates")
+# closed_peaks_logFC_3 <- res %>%
+#   dplyr::filter(padj < 0.05 & log2FoldChange < -3) %>% 
+#   tidyr::separate(coordinates,c("chr","start","end"))
+# dat <- res %>% 
+#   tidyr::separate(coordinates,c("chr","start","end"))
+# dat <- dat[!is.na(as.numeric(as.character(dat$start))),]
+# gr <- makeGRangesFromDataFrame(df = dat,keep.extra.columns = FALSE,seqinfo = gn,start.field = "start",seqnames.field = "chr",end.field = "end")
+# export.bed(gr,con="~/Documents/10T_K36me2/regionDB/mm10/ATACpeaks/regions/all_peaks.bed")
+# #
+# keep <- fread("~/Documents/10T_K36me2/ref/mm10.chrom.sizes") %>%
+#   setNames(c("chr","seqlength"))
+# gn <- keep %>% {Seqinfo(.$chr, .$seqlength)}
+# gn_df <- gn %>% as.data.frame() %>% rownames_to_column("seqnames")
+# #
+# gr_closed_peaks <- makeGRangesFromDataFrame(df = closed_peaks_logFC_3,seqinfo = gn,start.field = "start",seqnames.field = "chr",end.field = "end",keep.extra.columns = FALSE)
+# #
+# open_peaks_logFC_3 <- res %>%
+#   dplyr::filter(padj < 0.05 & log2FoldChange > 3) %>% 
+#   tidyr::separate(coordinates,c("chr","start","end")) %>%
+#   dplyr::slice(-c(1974:1977))
+# #
+# gr_open_peaks <- makeGRangesFromDataFrame(df = open_peaks_logFC_3,seqinfo = gn,start.field = "start",seqnames.field = "chr",end.field = "end",keep.extra.columns = FALSE)
+# # 
+# # export.bed(gr_closed_peaks,"~/Documents/10T_K36me2/data/differential.ATACseq.regions/gr_closed_peaks_TKO_v_PA_logFC_3")
+# # export.bed(gr_open_peaks,"~/Documents/10T_K36me2/data/differential.ATACseq.regions/gr_open_peaks_TKO_v_PA_logFC_3")
+# library(BiocParallel)
+# library(dplyr)
+# library(GenomicRanges)
+# library(regioneR)
+# library(rtracklayer)
+# library(data.table)
+# library(ChIPseeker)
+# TKO_remaining <- import.bed("~/Documents/10T_K36me2/data/epic2.peaks.final/merged_reps/TKO.ol.epic2.bed")
+# PA <- import.bed("~/Documents/10T_K36me2/data/epic2.peaks.final/merged_reps/PA.ol.epic2.bed")
+# TKO_lost_regions <- import.bed("~/Documents/10T_K36me2/data/differential.ATACseq.regions/K36me2_lost_regions_TKO.bed")
+# closed_peaks <- import.bed("~/Documents/10T_K36me2/data/differential.ATACseq.regions/gr_closed_peaks_TKO_v_PA_logFC_3.bed")
+# open_peaks <- import.bed("~/Documents/10T_K36me2/data/differential.ATACseq.regions/gr_open_peaks_TKO_v_PA_logFC_3.bed")
+# #
+# # use multiple cores
+# library(BiocParallel)
+# numCores <- parallel::detectCores()
+# if(Sys.info()['sysname'] == "Darwin"){
+#   register(SnowParam(workers = numCores-1),
+#            default = TRUE)
+# } else{
+#   register(MulticoreParam(workers = numCores-1),
+#            default = TRUE)
+# }
+# #
+# test_TKO_lost_K36me2_regions <- test
+# test_TKO_remaining_K36me2_regions <- enrichPeakOverlap(queryPeak = qSet,targetPeak = "~/Documents/10T_K36me2/regionDB/mm10/ATACpeaks/regions/",TxDb = TxDb.Mmusculus.UCSC.mm10.knownGene,pAdjustMethod = "fdr",nShuffle = 1000,pool = FALSE,mc.cores = numCores,verbose = TRUE)
+# #
+# library(LOLA)
+# # create universe 
+# uni <- readBed("~/Documents/10T_K36me2/data/epic2.peaks.final/merged_reps/final_PA_TKO_pooled.bed")
+# qSet <- readBed("~/Documents/10T_K36me2/data/Lost.K36me2.regions/PA_subtracted_by_TKO.bed")
+# # load functions
+# signif.num <- function(x) {
+#   symnum(x, corr = FALSE, na = FALSE, legend = FALSE,
+#          cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), 
+#          symbols = c("****", "***", "**", "*", "ns"))
+# }
+# #
+# ATACDB <- loadRegionDB('regionDB/mm10',collections = "ATACpeaks")
+# ensemblDB <- loadRegionDB('regionDB/mm10',collections = "ensembl")
+# #
+# res <- runLOLA(qSet,uni,ATACDB,cores = 6)
+# #
+# checkUniverseAppropriateness(qSet,uni, cores = 1,
+#   fast = FALSE)
+# #
+# ensembl.ol.plot.enrich <- res %>% mutate(reg = sub('.bed', '', filename),
+#                         sig = as.character(signif.num(qValue)),
+#                         q = case_when(qValue > 0 ~ qValue, T ~ min(qValue[qValue > 0])),
+#                         q = -log10(q),
+#                     info = sprintf('Odds ratio: %.3g <br>FDR: %.3g<br>Overlap: %d<br>|Annotation|: %d', oddsRatio, qValue, support, size),
+#                         oddsRatio = case_when(oddsRatio > 0 ~ oddsRatio, T ~ min(oddsRatio[oddsRatio > 0]))) %>%
+#   hchart('scatter', hcaes(x = oddsRatio, y = q, size = support,
+#                           group = reg), maxSize = '10%') %>%
+#   hc_xAxis( title = list(text = 'Odds ratio'), type = 'logarithmic') %>%
+#   hc_yAxis(title = list(text = '-log10(padj)')) %>%
+#   hc_tooltip(pointFormatter = JS("function() {
+#       return this.options.info;
+#   }")) %>%
+#   hc_chart(zoomType = 'xy')
+```
+
 # Number of peaks per sample (IDR-pooled)
 ```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
 num_of_peaks <- data.frame(
@@ -118,6 +209,11 @@ num_of_peaks <- data.frame(
 )
 rownames(num_of_peaks) <- "Number_of_Peaks"
 num_of_peaks %>% reactable
+```
+
+# Aggregate plot
+```{r,aggregate_plot,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+knitr::include_graphics("~/Documents/10T_K36me2/images/aggregate.ATAC.profile.png")
 ```
 
 # Distribution of ATAC-seq peaks
@@ -155,15 +251,16 @@ These logfold changes were shrunken prior to plotting.
 ### |log2FC| > 1
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
 resLFC <- lfcShrink(dds=dds, contrast=c("condition","TKO","PA"),type = "ashr") 
-volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cutoff = 1)
-# check direction of shrinkage
-# res <- results(dds,contrast = c("condition","TKO","PA")) 
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange TKO/PA','',cutoff = 1)
+# # check direction of shrinkage
+# res <- results(dds,contrast = c("condition","TKO","PA")) %>% as.data.frame() %>%
+#   rownames_to_column("coordinates")
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
 ```
 
 ### |log2FC| > 2
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cutoff = 2)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange TKO/PA','',cutoff = 2)
 # check direction of shrinkage
 # res <- results(dds,contrast = c("condition","TKO","PA"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -171,7 +268,7 @@ volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cut
 
 ### |log2FC| > 2.5
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cutoff = 2.5)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange TKO/PA','',cutoff = 2.5)
 # check direction of shrinkage
 # res <- results(dds,contrast = c("condition","TKO","PA"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -179,7 +276,7 @@ volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cut
 
 ### |log2FC| > 3
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cutoff = 3)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange TKO/PA','',cutoff = 3)
 # check direction of shrinkage
 # res <- results(dds,contrast = c("condition","TKO","PA"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -187,7 +284,7 @@ volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cut
 
 ### |log2FC| > 4
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cutoff = 4)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange TKO/PA','',cutoff = 4)
 # check direction of shrinkage
 # res <- results(dds,contrast = c("condition","TKO","PA"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -198,7 +295,7 @@ volc(resLFC,'log2FoldChange','padj','log2FoldChange TKO/PA','-log10(FDR)','',cut
 ### |log2FC| > 1
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
 resLFC <- lfcShrink(dds=dds, contrast=c("condition","QKO","PA"),type = "ashr") 
-volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cutoff = 1)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange QKO/PA','',cutoff = 1)
 #
 # res <- results(dds,contrast = c("condition","QKO","PA"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -206,7 +303,7 @@ volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cut
 
 ### |log2FC| > 2
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cutoff = 2)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange QKO/PA','',cutoff = 2)
 #
 # res <- results(dds,contrast = c("condition","QKO","PA"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -214,7 +311,7 @@ volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cut
 
 ### |log2FC| > 2.5
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cutoff = 2.5)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange QKO/PA','',cutoff = 2.5)
 #
 # res <- results(dds,contrast = c("condition","QKO","PA"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -222,7 +319,7 @@ volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cut
 
 ### |log2FC| > 3
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cutoff = 3)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange QKO/PA','',cutoff = 3)
 #
 # res <- results(dds,contrast = c("condition","QKO","PA"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -230,7 +327,7 @@ volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cut
 
 ### |log2FC| > 4
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cutoff = 4)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange QKO/PA','',cutoff = 4)
 #
 # res <- results(dds,contrast = c("condition","QKO","PA"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -241,7 +338,7 @@ volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/PA','-log10(FDR)','',cut
 ### |log2FC| > 1
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
 resLFC <- lfcShrink(dds=dds, contrast=c("condition","QKO","TKO"),type = "ashr") 
-volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cutoff = 1)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange QKO/TKO','',cutoff = 1)
 #
 # res <- results(dds,contrast = c("condition","QKO","TKO"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -249,7 +346,7 @@ volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cu
 
 ### |log2FC| > 2
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cutoff = 2)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange QKO/TKO','',cutoff = 2)
 #
 # res <- results(dds,contrast = c("condition","QKO","TKO"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -257,7 +354,7 @@ volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cu
 
 ### |log2FC| > 2.5
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cutoff = 2.5)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange QKO/TKO','',cutoff = 2.5)
 #
 # res <- results(dds,contrast = c("condition","QKO","TKO"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -265,7 +362,7 @@ volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cu
 
 ### |log2FC| > 3
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cutoff = 3)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange QKO/TKO','',cutoff = 3)
 #
 # res <- results(dds,contrast = c("condition","QKO","TKO"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -273,7 +370,7 @@ volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cu
 
 ### |log2FC| > 4
 ```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-volc(resLFC,'log2FoldChange','padj','log2FoldChange QKO/TKO','-log10(FDR)','',cutoff = 4)
+volc(resLFC,'log2FoldChange','padj','-log10(FDR)','log2FoldChange QKO/TKO','',cutoff = 4)
 #
 # res <- results(dds,contrast = c("condition","QKO","TKO"))
 # volc(res,'log2FoldChange','padj','-log10(FDR)','')
@@ -724,3 +821,18 @@ bw <- makeGRangesFromDataFrame(df = res,keep.extra.columns = FALSE,seqinfo = gn)
 ann <- annotatePeak(bw,TxDb = txdb,tssRegion = c(-3000, 3000))
 plotAnnoBar(ann)
 ```
+
+# Number of ATACseq peaks in K36me2 regions
+
+Taking the union of ATACseq, how many ATACseq peaks are found in each sample's K36me2 regions.
+
+```{r,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+df <- data.frame(
+  PA = 34636,
+  PA_only = 16467,
+  TKO = 23228,
+  TKO_only = 3728
+)
+reactable(df)
+```
+
