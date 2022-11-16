@@ -98,6 +98,6 @@ plotAnnoBar(peak_annot)
 ChIP signal was centered on ATACseq peaks.
 
 ```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
-imageList <- list.files("~/Documents/10T_K36me2/data/differential.ATACseq.regions", pattern= "*ATAC.profile.png", full.names=T)
+imageList <- list.files("~/Documents/10T_K36me2/images", pattern= "*ATAC.final.profile.png", full.names=T)
 include_graphics(imageList,dpi = 600)
 ```
