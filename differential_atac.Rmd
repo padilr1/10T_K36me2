@@ -68,18 +68,45 @@ all_peaks <- import.bed("~/Documents/10T_K36me2/regionDB/mm10/ATACpeaks/regions/
 # #
 # l <- list(all_peaks=all_peaks,closed_peaks=closed_peaks,open_peaks=open_peaks)
 # peak_annot <- lapply(l,annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
+# df <- peak_annot$open_peaks %>% as.data.frame()
 # plotAnnoBar(peak_annot)
+# #
+# promoter <- df %>%
+#   dplyr::filter(str_detect(annotation, "Promoter")) %>%
+#   dplyr::select(1:3)
+# intergenic <- df %>%
+#   dplyr::filter(str_detect(annotation, "Distal Intergenic")) %>%
+#   dplyr::select(1:3)
+# intron <- df %>%
+#   dplyr::filter(str_detect(annotation, "Intron")) %>%
+#   dplyr::select(1:3)
+# #
+# export.bed(object = promoter,con="~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_v_PA_cutoff_logFC_3/open_peaks.promoter.bed")
+# export.bed(object = intergenic,con="~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_v_PA_cutoff_logFC_3/open_peaks.intergenic.bed")
+# export.bed(object = intron,con="~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_v_PA_cutoff_logFC_3/open_peaks.intron.bed")
 # save(peak_annot,file="~/Documents/10T_K36me2/data/RData/annotation/differential_ATAC_peaks_TKO.RData")
 ```
 
 # Table of overlap
-```{r,table_ol,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+
+## K36me2 
+```{r,table_ol_K36me2,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
 df <- read.csv("~/Documents/10T_K36me2/data/Lost.K36me2.regions/ol.ATAC.K36me2.table.csv") %>%
   column_to_rownames("X")
 reactable(df)
 ```
 
-# Distribution {.tabset}
+## K9me3
+```{r,table_ol_K9me3,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+df <- read.csv("~/Documents/10T_K36me2/data/Lost.K36me2.regions/ol.ATAC.K36me2.table.csv") %>%
+  column_to_rownames("X")
+reactable(df)
+```
+
+
+---
+
+# Distribution {.tabset .tabset-pills}
 
 ## H3K36me2
 ```{r,K36me2_distribution,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
@@ -87,17 +114,28 @@ load(file="~/Documents/10T_K36me2/data/RData/annotation/lost_remaining_K36me2_TK
 plotAnnoBar(peak_annot)
 ```
 
-## ATACseq peaks
+## ATACseq peaks {.tabset}
+
+### TKO vs. PA
 ```{r,ATAC_seq_distribution,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
 load("~/Documents/10T_K36me2/data/RData/annotation/differential_ATAC_peaks_TKO.RData")
 plotAnnoBar(peak_annot)
 ```
 
-# ChIP signal 
+### QKO vs. PA
+
+### QKO vs. TKO
+
+# ChIP signal {.tabset .tabset-pills}
 
 ChIP signal was centered on ATACseq peaks.
 
+### TKO vs. PA
 ```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
 imageList <- list.files("~/Documents/10T_K36me2/images", pattern= "*ATAC.final.profile.png", full.names=T)
 include_graphics(imageList,dpi = 600)
 ```
+
+### QKO vs. PA
+
+### QKO vs. TKO

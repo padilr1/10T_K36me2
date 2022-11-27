@@ -364,12 +364,20 @@ div.tocify {
 
 <div id="number-of-peaks-per-sample-idr-pooled" class="section level1">
 <h1>Number of peaks per sample (IDR-pooled)</h1>
-<div id="htmlwidget-ebbf760eb16c55dd3bb8" class="reactable html-widget" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-ebbf760eb16c55dd3bb8">{"x":{"tag":{"name":"Reactable","attribs":{"data":{".rownames":["Number_of_Peaks"],"PA":[32305],"TKO":[33323],"QKO":[26636]},"columns":[{"accessor":".rownames","name":"","type":"character","sortable":false,"filterable":false,"rowHeader":true},{"accessor":"PA","name":"PA","type":"numeric"},{"accessor":"TKO","name":"TKO","type":"numeric"},{"accessor":"QKO","name":"QKO","type":"numeric"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"b5268781a38940cfdee8c04857370817"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-044d2596bd9f3dfd1d42" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-044d2596bd9f3dfd1d42">{"x":{"tag":{"name":"Reactable","attribs":{"data":{".rownames":["Number_of_Peaks"],"PA":[32305],"TKO":[33323],"QKO":[26636]},"columns":[{"accessor":".rownames","name":"","type":"character","sortable":false,"filterable":false,"rowHeader":true},{"accessor":"PA","name":"PA","type":"numeric"},{"accessor":"TKO","name":"TKO","type":"numeric"},{"accessor":"QKO","name":"QKO","type":"numeric"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"b5268781a38940cfdee8c04857370817"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="aggregate-plot" class="section level1">
-<h1>Aggregate plot</h1>
-<p><img src="images/aggregate.ATAC.profile.png" width="100%" /></p>
+<div id="aggregate-plot" class="section level1 tabset">
+<h1 class="tabset">Aggregate plot</h1>
+<p>ATAC-seq signal was centered on ATAC-seq peaks.</p>
+<div id="merged-reps" class="section level2">
+<h2>Merged reps</h2>
+<p><img src="images/ATAC.merged_reps.heatmap.png" width="100%" /></p>
+</div>
+<div id="individual-reps" class="section level2">
+<h2>Individual reps</h2>
+<p><img src="images/ATAC.individual_reps.heatmap.png" width="100%" /></p>
+</div>
 </div>
 <div id="distribution-of-atac-seq-peaks" class="section level1">
 <h1>Distribution of ATAC-seq peaks</h1>
@@ -377,8 +385,8 @@ div.tocify {
 </div>
 <div id="pca" class="section level1">
 <h1>PCA</h1>
-<div id="htmlwidget-8ab4a80c31fde03d4b2a" style="width:100%;height:480px;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-8ab4a80c31fde03d4b2a">{"x":{"visdat":{"1026e4fefc87":["function () ","plotlyVisDat"]},"cur_data":"1026e4fefc87","attrs":{"1026e4fefc87":{"x":[-31.8397341200494,-31.9209003060315,17.1032533787394,19.5423798794809,14.3516903782002,12.7633107896604],"y":[0.732723885123169,0.619579426697174,6.69953144345515,6.17921901977061,-6.67208287193785,-7.55897090310827],"text":["parental-1","parental-2","TKO-1","TKO-dgNSD3_c10_unedited","QKO_c1","QKO_c7"],"mode":"markers","marker":{"size":11},"color":["PA","PA","TKO","TKO","QKO","QKO"],"colors":"Dark2","alpha_stroke":1,"sizes":[10,100],"spans":[1,20]}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"","xaxis":{"domain":[0,1],"automargin":true,"title":"PC1 ( 68.54%)"},"yaxis":{"domain":[0,1],"automargin":true,"title":"PC2 ( 16.84%)"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-31.8397341200494,-31.9209003060315],"y":[0.732723885123169,0.619579426697174],"text":["parental-1","parental-2"],"mode":"markers","marker":{"color":"rgba(27,158,119,1)","size":11,"line":{"color":"rgba(27,158,119,1)"}},"type":"scatter","name":"PA","textfont":{"color":"rgba(27,158,119,1)"},"error_y":{"color":"rgba(27,158,119,1)"},"error_x":{"color":"rgba(27,158,119,1)"},"line":{"color":"rgba(27,158,119,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[14.3516903782002,12.7633107896604],"y":[-6.67208287193785,-7.55897090310827],"text":["QKO_c1","QKO_c7"],"mode":"markers","marker":{"color":"rgba(217,95,2,1)","size":11,"line":{"color":"rgba(217,95,2,1)"}},"type":"scatter","name":"QKO","textfont":{"color":"rgba(217,95,2,1)"},"error_y":{"color":"rgba(217,95,2,1)"},"error_x":{"color":"rgba(217,95,2,1)"},"line":{"color":"rgba(217,95,2,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[17.1032533787394,19.5423798794809],"y":[6.69953144345515,6.17921901977061],"text":["TKO-1","TKO-dgNSD3_c10_unedited"],"mode":"markers","marker":{"color":"rgba(117,112,179,1)","size":11,"line":{"color":"rgba(117,112,179,1)"}},"type":"scatter","name":"TKO","textfont":{"color":"rgba(117,112,179,1)"},"error_y":{"color":"rgba(117,112,179,1)"},"error_x":{"color":"rgba(117,112,179,1)"},"line":{"color":"rgba(117,112,179,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-d435388873b096ff6e8d" style="width:100%;height:480px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d435388873b096ff6e8d">{"x":{"visdat":{"179a719f6aa76":["function () ","plotlyVisDat"]},"cur_data":"179a719f6aa76","attrs":{"179a719f6aa76":{"x":[-31.8397341200494,-31.9209003060315,17.1032533787394,19.5423798794809,14.3516903782002,12.7633107896604],"y":[0.732723885123169,0.619579426697174,6.69953144345515,6.17921901977061,-6.67208287193785,-7.55897090310827],"text":["parental-1","parental-2","TKO-1","TKO-dgNSD3_c10_unedited","QKO_c1","QKO_c7"],"mode":"markers","marker":{"size":11},"color":["PA","PA","TKO","TKO","QKO","QKO"],"colors":"Dark2","alpha_stroke":1,"sizes":[10,100],"spans":[1,20]}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"title":"","xaxis":{"domain":[0,1],"automargin":true,"title":"PC1 ( 68.54%)"},"yaxis":{"domain":[0,1],"automargin":true,"title":"PC2 ( 16.84%)"},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-31.8397341200494,-31.9209003060315],"y":[0.732723885123169,0.619579426697174],"text":["parental-1","parental-2"],"mode":"markers","marker":{"color":"rgba(27,158,119,1)","size":11,"line":{"color":"rgba(27,158,119,1)"}},"type":"scatter","name":"PA","textfont":{"color":"rgba(27,158,119,1)"},"error_y":{"color":"rgba(27,158,119,1)"},"error_x":{"color":"rgba(27,158,119,1)"},"line":{"color":"rgba(27,158,119,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[14.3516903782002,12.7633107896604],"y":[-6.67208287193785,-7.55897090310827],"text":["QKO_c1","QKO_c7"],"mode":"markers","marker":{"color":"rgba(217,95,2,1)","size":11,"line":{"color":"rgba(217,95,2,1)"}},"type":"scatter","name":"QKO","textfont":{"color":"rgba(217,95,2,1)"},"error_y":{"color":"rgba(217,95,2,1)"},"error_x":{"color":"rgba(217,95,2,1)"},"line":{"color":"rgba(217,95,2,1)"},"xaxis":"x","yaxis":"y","frame":null},{"x":[17.1032533787394,19.5423798794809],"y":[6.69953144345515,6.17921901977061],"text":["TKO-1","TKO-dgNSD3_c10_unedited"],"mode":"markers","marker":{"color":"rgba(117,112,179,1)","size":11,"line":{"color":"rgba(117,112,179,1)"}},"type":"scatter","name":"TKO","textfont":{"color":"rgba(117,112,179,1)"},"error_y":{"color":"rgba(117,112,179,1)"},"error_x":{"color":"rgba(117,112,179,1)"},"line":{"color":"rgba(117,112,179,1)"},"xaxis":"x","yaxis":"y","frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="volcano-plots" class="section level1 tabset">
 <h1 class="tabset">Volcano plots</h1>
@@ -481,22 +489,22 @@ log2FC as indicates below.</p>
 <h3 class="tabset">Cutoff=1</h3>
 <div id="log2fc-1-3" class="section level4">
 <h4>log2FC &gt; 1</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:43:41 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:43:42 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:43:42 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:43:42 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:44:06 
-## &gt;&gt; done...                    2022-11-15 20:44:06</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:08:09 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:08:10 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:08:11 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:08:11 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:08:30 
+## &gt;&gt; done...                    2022-11-27 18:08:30</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-22-1.png" width="100%" /></p>
 </div>
 <div id="log2fc--1" class="section level4">
 <h4>log2FC &lt; -1</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:44:07 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:44:07 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:44:08 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:44:08 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:44:11 
-## &gt;&gt; done...                    2022-11-15 20:44:11</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:08:31 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:08:31 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:08:32 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:08:32 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:08:34 
+## &gt;&gt; done...                    2022-11-27 18:08:34</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-23-1.png" width="100%" /></p>
 </div>
 </div>
@@ -504,22 +512,22 @@ log2FC as indicates below.</p>
 <h3 class="tabset">Cutoff=2</h3>
 <div id="log2fc-2-3" class="section level4">
 <h4>log2FC &gt; 2</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:44:13 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:44:13 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:44:13 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:44:13 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:44:16 
-## &gt;&gt; done...                    2022-11-15 20:44:16</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:08:35 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:08:35 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:08:36 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:08:36 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:08:38 
+## &gt;&gt; done...                    2022-11-27 18:08:38</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-24-1.png" width="100%" /></p>
 </div>
 <div id="log2fc--2" class="section level4">
 <h4>log2FC &lt; -2</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:44:17 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:44:17 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:44:17 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:44:17 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:44:20 
-## &gt;&gt; done...                    2022-11-15 20:44:20</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:08:39 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:08:39 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:08:39 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:08:39 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:08:41 
+## &gt;&gt; done...                    2022-11-27 18:08:41</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-25-1.png" width="100%" /></p>
 </div>
 </div>
@@ -527,22 +535,22 @@ log2FC as indicates below.</p>
 <h3 class="tabset">Cutoff=3</h3>
 <div id="log2fc-3-3" class="section level4">
 <h4>log2FC &gt; 3</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:44:21 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:44:21 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:44:21 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:44:21 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:44:24 
-## &gt;&gt; done...                    2022-11-15 20:44:24</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:08:43 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:08:43 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:08:43 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:08:43 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:08:45 
+## &gt;&gt; done...                    2022-11-27 18:08:45</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-26-1.png" width="100%" /></p>
 </div>
 <div id="log2fc--3" class="section level4">
 <h4>log2FC &lt; -3</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:44:25 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:44:25 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:44:26 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:44:26 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:44:28 
-## &gt;&gt; done...                    2022-11-15 20:44:28</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:08:46 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:08:46 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:08:47 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:08:47 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:08:49 
+## &gt;&gt; done...                    2022-11-27 18:08:49</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-27-1.png" width="100%" /></p>
 </div>
 </div>
@@ -550,22 +558,22 @@ log2FC as indicates below.</p>
 <h3 class="tabset">Cutoff=4</h3>
 <div id="log2fc-4-3" class="section level4">
 <h4>log2FC &gt; 4</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:44:29 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:44:29 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:44:30 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:44:30 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:44:32 
-## &gt;&gt; done...                    2022-11-15 20:44:32</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:08:50 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:08:50 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:08:50 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:08:50 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:08:52 
+## &gt;&gt; done...                    2022-11-27 18:08:52</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-28-1.png" width="100%" /></p>
 </div>
 <div id="log2fc--4" class="section level4">
 <h4>log2FC &lt; -4</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:44:33 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:44:33 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:44:34 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:44:34 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:44:36 
-## &gt;&gt; done...                    2022-11-15 20:44:36</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:08:53 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:08:53 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:08:53 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:08:53 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:08:56 
+## &gt;&gt; done...                    2022-11-27 18:08:56</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-29-1.png" width="100%" /></p>
 </div>
 </div>
@@ -576,22 +584,22 @@ log2FC as indicates below.</p>
 <h3 class="tabset">Cutoff=1</h3>
 <div id="log2fc-1-4" class="section level4">
 <h4>log2FC &gt; 1</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:44:38 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:44:38 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:44:38 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:44:38 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:44:41 
-## &gt;&gt; done...                    2022-11-15 20:44:41</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:08:57 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:08:57 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:08:57 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:08:57 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:00 
+## &gt;&gt; done...                    2022-11-27 18:09:00</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-30-1.png" width="100%" /></p>
 </div>
 <div id="log2fc--1-1" class="section level4">
 <h4>log2FC &lt; -1</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:44:43 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:44:43 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:44:44 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:44:44 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:44:46 
-## &gt;&gt; done...                    2022-11-15 20:44:46</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:01 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:01 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:02 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:02 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:04 
+## &gt;&gt; done...                    2022-11-27 18:09:04</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-31-1.png" width="100%" /></p>
 </div>
 </div>
@@ -599,22 +607,22 @@ log2FC as indicates below.</p>
 <h3 class="tabset">Cutoff=2</h3>
 <div id="log2fc-2-4" class="section level4">
 <h4>log2FC &gt; 2</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:44:47 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:44:47 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:44:48 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:44:48 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:44:50 
-## &gt;&gt; done...                    2022-11-15 20:44:50</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:05 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:05 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:05 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:05 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:07 
+## &gt;&gt; done...                    2022-11-27 18:09:07</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-32-1.png" width="100%" /></p>
 </div>
 <div id="log2fc--2-1" class="section level4">
 <h4>log2FC &lt; -2</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:44:51 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:44:51 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:44:52 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:44:52 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:44:54 
-## &gt;&gt; done...                    2022-11-15 20:44:54</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:08 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:08 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:09 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:09 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:11 
+## &gt;&gt; done...                    2022-11-27 18:09:11</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-33-1.png" width="100%" /></p>
 </div>
 </div>
@@ -622,22 +630,22 @@ log2FC as indicates below.</p>
 <h3 class="tabset">Cutoff=3</h3>
 <div id="log2fc-3-4" class="section level4">
 <h4>log2FC &gt; 3</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:44:55 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:44:55 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:44:56 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:44:56 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:44:58 
-## &gt;&gt; done...                    2022-11-15 20:44:58</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:12 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:12 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:13 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:13 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:15 
+## &gt;&gt; done...                    2022-11-27 18:09:15</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-34-1.png" width="100%" /></p>
 </div>
 <div id="log2fc--3-1" class="section level4">
 <h4>log2FC &lt; -3</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:44:59 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:44:59 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:45:00 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:45:00 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:45:02 
-## &gt;&gt; done...                    2022-11-15 20:45:02</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:16 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:16 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:16 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:16 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:18 
+## &gt;&gt; done...                    2022-11-27 18:09:18</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-35-1.png" width="100%" /></p>
 </div>
 </div>
@@ -645,22 +653,22 @@ log2FC as indicates below.</p>
 <h3 class="tabset">Cutoff=4</h3>
 <div id="log2fc-4-4" class="section level4">
 <h4>log2FC &gt; 4</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:45:04 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:45:04 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:45:04 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:45:04 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:45:07 
-## &gt;&gt; done...                    2022-11-15 20:45:07</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:19 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:19 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:19 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:19 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:21 
+## &gt;&gt; done...                    2022-11-27 18:09:21</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-36-1.png" width="100%" /></p>
 </div>
 <div id="log2fc--4-1" class="section level4">
 <h4>log2FC &lt; -4</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:45:08 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:45:08 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:45:09 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:45:09 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:45:12 
-## &gt;&gt; done...                    2022-11-15 20:45:12</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:23 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:23 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:23 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:23 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:25 
+## &gt;&gt; done...                    2022-11-27 18:09:25</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-37-1.png" width="100%" /></p>
 </div>
 </div>
@@ -671,22 +679,22 @@ log2FC as indicates below.</p>
 <h3 class="tabset">Cutoff=1</h3>
 <div id="log2fc-1-5" class="section level4">
 <h4>log2FC &gt; 1</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:45:13 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:45:13 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:45:14 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:45:14 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:45:17 
-## &gt;&gt; done...                    2022-11-15 20:45:17</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:26 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:26 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:27 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:27 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:29 
+## &gt;&gt; done...                    2022-11-27 18:09:29</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-38-1.png" width="100%" /></p>
 </div>
 <div id="log2fc--1-2" class="section level4">
 <h4>log2FC &lt; -1</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:45:19 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:45:19 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:45:20 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:45:20 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:45:22 
-## &gt;&gt; done...                    2022-11-15 20:45:22</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:30 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:30 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:31 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:31 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:33 
+## &gt;&gt; done...                    2022-11-27 18:09:33</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-39-1.png" width="100%" /></p>
 </div>
 </div>
@@ -694,22 +702,22 @@ log2FC as indicates below.</p>
 <h3 class="tabset">Cutoff=2</h3>
 <div id="log2fc-2-5" class="section level4">
 <h4>log2FC &gt; 2</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:45:24 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:45:24 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:45:24 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:45:24 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:45:27 
-## &gt;&gt; done...                    2022-11-15 20:45:27</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:35 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:35 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:35 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:35 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:38 
+## &gt;&gt; done...                    2022-11-27 18:09:38</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-40-1.png" width="100%" /></p>
 </div>
 <div id="log2fc--2-2" class="section level4">
 <h4>log2FC &lt; -2</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:45:29 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:45:29 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:45:29 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:45:29 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:45:32 
-## &gt;&gt; done...                    2022-11-15 20:45:32</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:39 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:39 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:39 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:39 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:42 
+## &gt;&gt; done...                    2022-11-27 18:09:42</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-41-1.png" width="100%" /></p>
 </div>
 </div>
@@ -717,22 +725,22 @@ log2FC as indicates below.</p>
 <h3 class="tabset">Cutoff=3</h3>
 <div id="log2fc-3-5" class="section level4">
 <h4>log2FC &gt; 3</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:45:33 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:45:33 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:45:34 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:45:34 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:45:36 
-## &gt;&gt; done...                    2022-11-15 20:45:36</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:43 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:43 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:43 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:43 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:45 
+## &gt;&gt; done...                    2022-11-27 18:09:45</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-42-1.png" width="100%" /></p>
 </div>
 <div id="log2fc--3-2" class="section level4">
 <h4>log2FC &lt; -3</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:45:38 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:45:38 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:45:38 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:45:38 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:45:41 
-## &gt;&gt; done...                    2022-11-15 20:45:41</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:46 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:46 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:47 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:47 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:49 
+## &gt;&gt; done...                    2022-11-27 18:09:49</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-43-1.png" width="100%" /></p>
 </div>
 </div>
@@ -740,22 +748,22 @@ log2FC as indicates below.</p>
 <h3 class="tabset">Cutoff=4</h3>
 <div id="log2fc-4-5" class="section level4">
 <h4>log2FC &gt; 4</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:45:43 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:45:43 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:45:43 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:45:43 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:45:46 
-## &gt;&gt; done...                    2022-11-15 20:45:46</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:51 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:51 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:51 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:51 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:53 
+## &gt;&gt; done...                    2022-11-27 18:09:53</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-44-1.png" width="100%" /></p>
 </div>
 <div id="log2fc--4-2" class="section level4">
 <h4>log2FC &lt; -4</h4>
-<pre><code>## &gt;&gt; preparing features information...      2022-11-15 20:45:47 
-## &gt;&gt; identifying nearest features...        2022-11-15 20:45:47 
-## &gt;&gt; calculating distance from peak to TSS...   2022-11-15 20:45:48 
-## &gt;&gt; assigning genomic annotation...        2022-11-15 20:45:48 
-## &gt;&gt; assigning chromosome lengths           2022-11-15 20:45:51 
-## &gt;&gt; done...                    2022-11-15 20:45:51</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2022-11-27 18:09:54 
+## &gt;&gt; identifying nearest features...        2022-11-27 18:09:54 
+## &gt;&gt; calculating distance from peak to TSS...   2022-11-27 18:09:54 
+## &gt;&gt; assigning genomic annotation...        2022-11-27 18:09:54 
+## &gt;&gt; assigning chromosome lengths           2022-11-27 18:09:57 
+## &gt;&gt; done...                    2022-11-27 18:09:57</code></pre>
 <p><img src="ATACseq_analysis_files/figure-html/unnamed-chunk-45-1.png" width="100%" /></p>
 </div>
 </div>
@@ -766,8 +774,8 @@ class="section level1">
 <h1>Number of ATACseq peaks in K36me2 regions</h1>
 <p>Taking the union of ATACseq, how many ATACseq peaks are found in each
 sample’s K36me2 regions.</p>
-<div id="htmlwidget-6d770a0f2a83ae34ec8d" class="reactable html-widget" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-6d770a0f2a83ae34ec8d">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"PA":[34636],"PA_only":[16467],"TKO":[23228],"TKO_only":[3728]},"columns":[{"accessor":"PA","name":"PA","type":"numeric"},{"accessor":"PA_only","name":"PA_only","type":"numeric"},{"accessor":"TKO","name":"TKO","type":"numeric"},{"accessor":"TKO_only","name":"TKO_only","type":"numeric"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"7fdd69825e3d997ae7a77e1a0138296e"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-2f5a21ba1aa70fd664a4" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-2f5a21ba1aa70fd664a4">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"PA":[34636],"PA_only":[16467],"TKO":[23228],"TKO_only":[3728]},"columns":[{"accessor":"PA","name":"PA","type":"numeric"},{"accessor":"PA_only","name":"PA_only","type":"numeric"},{"accessor":"TKO","name":"TKO","type":"numeric"},{"accessor":"TKO_only","name":"TKO_only","type":"numeric"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"7fdd69825e3d997ae7a77e1a0138296e"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 
 

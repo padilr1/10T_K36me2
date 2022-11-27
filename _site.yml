@@ -12,4 +12,6 @@ navbar:
       href: Pairwise_analysis.html
     - text: "Differential ATAC"
       href: differential_atac.html
+    - text: "Homer results"
+      href: HOMER_output.html
 output_dir: "docs"

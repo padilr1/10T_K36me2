@@ -110,12 +110,25 @@ gn <- keep %>% {Seqinfo(.$chr, .$seqlength)}
 ```
 
 ```{r,work,include=FALSE}
-# create granges of closed peaks
-# res <- results(dds,contrast = c("condition","TKO","PA")) %>% as.data.frame() %>%
+# # create granges of closed peaks
+# res <- results(dds,contrast = c("condition","QKO","TKO")) %>% as.data.frame() %>%
 #   rownames_to_column("coordinates")
-# closed_peaks_logFC_3 <- res %>%
-#   dplyr::filter(padj < 0.05 & log2FoldChange < -3) %>% 
+# all <- res %>%
 #   tidyr::separate(coordinates,c("chr","start","end"))
+# closed <- res %>%
+#   dplyr::filter(padj < 0.05 & log2FoldChange < -2) %>%
+#   tidyr::separate(coordinates,c("chr","start","end"))
+# closed$coordinates <- sprintf("%s:%s-%s",closed$chr,closed$start,closed$end)
+# #
+# open <- res %>%
+#   dplyr::filter(padj < 0.05 & log2FoldChange > 2) %>%
+#   tidyr::separate(coordinates,c("chr","start","end"))
+# open$coordinates <- sprintf("%s:%s-%s",open$chr,open$start,open$end)
+# #
+# write.csv(open,file="~/Documents/10T_K36me2/data/differential.ATACseq.regions/open_peaks_lfc_2.csv",quote = FALSE)
+# write.tsv(open[c("chr","start","end")],)
+# write_tsv(x = all[c("chr","start","end")],file = "~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO.v.QKO/all.TKOvQKO.bed",col_names = FALSE,quote = "none")
+#
 # dat <- res %>% 
 #   tidyr::separate(coordinates,c("chr","start","end"))
 # dat <- dat[!is.na(as.numeric(as.character(dat$start))),]
@@ -211,9 +224,18 @@ rownames(num_of_peaks) <- "Number_of_Peaks"
 num_of_peaks %>% reactable
 ```
 
-# Aggregate plot
-```{r,aggregate_plot,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
-knitr::include_graphics("~/Documents/10T_K36me2/images/aggregate.ATAC.profile.png")
+# Aggregate and heatmap plots {.tabset}
+
+ATAC-seq signal was centered on ATAC-seq peaks.
+
+## Merged reps
+```{r,aggregate_plot,echo = FALSE,fig.show = "hold", out.width = "50%", fig.align = "default"}
+knitr::include_graphics("~/Documents/10T_K36me2/images/ATAC.merged_reps.heatmap.png")
+```
+
+## Individual reps
+```{r,aggregate_plot_individual_reps,echo = FALSE,fig.show = "hold", out.width = "50%", fig.align = "default"}
+knitr::include_graphics("~/Documents/10T_K36me2/images/ATAC.individual_reps.heatmap.png")
 ```
 
 # Distribution of ATAC-seq peaks

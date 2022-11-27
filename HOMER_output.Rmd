@@ -1,0 +1,181 @@
+---
+title: ""
+author: ""
+date: ""
+output:
+  html_document:
+    toc_float: false 
+    theme: cerulean
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Homer motif analysis {.tabset .tabset-pills}
+
+## TKO vs. PA {.tabset .tabset-pills}
+
+### Open {.tabset}
+
+#### All
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_cf_PA_logFC_3/HOMER.out/open_peaks.all/knownResults.open_peaks.html")
+```
+
+#### Promoter
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_cf_PA_logFC_3/HOMER.out/open_peaks.promoter/knownResults.html")
+```
+
+#### Intron
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_cf_PA_logFC_3/HOMER.out/open_peaks.intron/knownResults.html")
+```
+
+#### Intergenic
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_cf_PA_logFC_3/HOMER.out/open_peaks.intergenic/knownResults.html")
+```
+
+### Closed {.tabset}
+
+#### All
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_cf_PA_logFC_3/HOMER.out/closed_peaks.all/homer.motifs.out.closed.peaks/knownResults.closed_peaks.html")
+```
+
+#### Promoter
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_cf_PA_logFC_3/HOMER.out/closed_peaks.promoter/knownResults.html")
+```
+
+#### Intron
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_cf_PA_logFC_3/HOMER.out/closed_peaks.intron/knownResults.html")
+```
+
+#### Intergenic
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_cf_PA_logFC_3/HOMER.out/closed_peaks.intergenic/knownResults.html")
+```
+
+--- 
+
+## QKO vs. PA {.tabset .tabset-pills}
+
+### Open {.tabset}
+
+#### All
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_PA_logFC_3/HOMER_res/open_peaks.all/knownResults.html")
+```
+
+#### Promoter
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_PA_logFC_3/HOMER_res/open_peaks.promoter/knownResults.html")
+```
+
+#### Intron
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_PA_logFC_3/HOMER_res/open_peaks.intron/knownResults.html")
+```
+
+#### Intergenic
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_PA_logFC_3/HOMER_res/open_peaks.intergenic/knownResults.html")
+```
+
+### Closed {.tabset}
+
+#### All
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_PA_logFC_3/HOMER_res/closed_peaks.all/knownResults.html")
+```
+
+#### Promoter
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_PA_logFC_3/HOMER_res/closed_peaks.promoter/knownResults.html")
+```
+
+#### Intron
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_PA_logFC_3/HOMER_res/closed_peaks.intron/knownResults.html")
+```
+
+#### Intergenic
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_PA_logFC_3/HOMER_res/closed_peaks.intergenic/knownResults.html")
+```
+
+---
+
+## QKO vs. TKO {.tabset .tabset-pills}
+
+### Open {.tabset}
+
+#### All
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_TKO_logFC_2/HOMER_res/open_peaks.all/knownResults.html")
+```
+
+#### Promoter
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_TKO_logFC_2/HOMER_res/open_peaks.promoter/knownResults.html")
+```
+
+#### Intron
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_TKO_logFC_2/HOMER_res/open_peaks.intron/knownResults.html")
+```
+
+#### Intergenic
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_TKO_logFC_2/HOMER_res/open_peaks.intergenic/knownResults.html")
+```
+
+### Closed {.tabset}
+
+#### All
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_TKO_logFC_2/HOMER_res/closed_peaks.all/knownResults.html")
+```
+
+#### Promoter
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_TKO_logFC_2/HOMER_res/closed_peaks.promoter/knownResults.html")
+```
+
+#### Intron
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_TKO_logFC_2/HOMER_res/closed_peaks.intron/knownResults.html")
+```
+
+#### Intergenic
+
+```{r,warning=FALSE,echo=FALSE,collapse=TRUE}
+htmltools::includeHTML("~/Documents/10T_K36me2/data/differential.ATACseq.regions/QKO_cf_TKO_logFC_2/HOMER_res/closed_peaks.intergenic/knownResults.html")
+```

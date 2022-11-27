@@ -401,17 +401,15 @@ reactable(pa$reactable)
 
 ---
 
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%', include=FALSE}
 # Union motif analysis 
-
-<b> PA-K36me2 was used as background </b>
-```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-library(htmltools)
-htmltools::includeHTML('~/Documents/10T_K36me2/data/motif.output/QKO.union/knownResults.html')
+# <b> PA-K36me2 was used as background </b>
+# library(htmltools)
+# htmltools::includeHTML('~/Documents/10T_K36me2/data/motif.output/QKO.union/knownResults.html')
 ```
 
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%', include=FALSE}
 # Intersect motif analysis
-
-<b> PA-K36me2 was used as background </b>
-```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='100%'}
-htmltools::includeHTML('~/Documents/10T_K36me2/data/motif.output/QKO.intersect/knownResults.html')
+# <b> PA-K36me2 was used as background </b>
+# htmltools::includeHTML('~/Documents/10T_K36me2/data/motif.output/QKO.intersect/knownResults.html')
 ```
