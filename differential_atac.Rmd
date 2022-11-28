@@ -110,16 +110,16 @@ reactable(df)
 
 ## H3K36me2
 ```{r,K36me2_distribution,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-load(file="~/Documents/10T_K36me2/data/RData/annotation/lost_remaining_K36me2_TKO.RData")
-plotAnnoBar(peak_annot)
+# load(file="~/Documents/10T_K36me2/data/RData/annotation/lost_remaining_K36me2_TKO.RData")
+# plotAnnoBar(peak_annot)
 ```
 
 ## ATACseq peaks {.tabset}
 
 ### TKO vs. PA
 ```{r,ATAC_seq_distribution,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-load("~/Documents/10T_K36me2/data/RData/annotation/differential_ATAC_peaks_TKO.RData")
-plotAnnoBar(peak_annot)
+# load("~/Documents/10T_K36me2/data/RData/annotation/differential_ATAC_peaks_TKO.RData")
+# plotAnnoBar(peak_annot)
 ```
 
 ### QKO vs. PA
@@ -132,8 +132,8 @@ ChIP signal was centered on ATACseq peaks.
 
 ### TKO vs. PA
 ```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
-imageList <- list.files("~/Documents/10T_K36me2/images", pattern= "*ATAC.final.profile.png", full.names=T)
-include_graphics(imageList,dpi = 600)
+# imageList <- list.files("~/Documents/10T_K36me2/images", pattern= "*ATAC.final.profile.png", full.names=T)
+# include_graphics(imageList,dpi = 600)
 ```
 
 ### QKO vs. PA

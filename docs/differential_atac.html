@@ -326,19 +326,19 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">10T K36me2 Summary</a>
+  <a href="index.html">K36me2 summary</a>
 </li>
 <li>
-  <a href="QKO_analysis.html">QKO analysis</a>
+  <a href="QKO_analysis.html">QKO reps analysis</a>
 </li>
 <li>
-  <a href="ATACseq_analysis.html">ATAC-seq analysis</a>
-</li>
-<li>
-  <a href="Pairwise_analysis.html">Pairwise analysis</a>
+  <a href="ATACseq_analysis.html">ATAC-seq summary</a>
 </li>
 <li>
   <a href="differential_atac.html">Differential ATAC</a>
+</li>
+<li>
+  <a href="HOMER_output.html">Homer results</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -358,24 +358,48 @@ div.tocify {
 
 <div id="table-of-overlap" class="section level1">
 <h1>Table of overlap</h1>
-<div id="htmlwidget-fae72eaad5dde0d7b8dd" class="reactable html-widget" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-fae72eaad5dde0d7b8dd">{"x":{"tag":{"name":"Reactable","attribs":{"data":{".rownames":["Total_peaks","Mean_peak_width_bp","Median_peak_width_bp","Overlap_with_all_ATACseq_peaks","Overlap_with_closed_peaks","Overlap_with_open_peaks"],"Cutoff":["N/A","N/A","N/A","N/A","padj < 0.05; log2FC < -3","padj < 0.05; log2FC > 3"],"Lost_K36me2_in_TKO":[19524,26447,13600,23231,1995,152],"Residual_K36me2_in_TKO":[12497,18531,6999,16467,473,1212],"PA_K9me3":[3907,367482,111199,23891,1322,1244],"PA_K9me3_subtract_by_TKO":[2112,283800,203800,2293,183,294],"TKO_K9me3":[2171,695958,178199,43758,2437,1579],"TKO_K9me3_subtract_by_PA":[3871,174260,169601,22239,1301,636]},"columns":[{"accessor":".rownames","name":"","type":"character","sortable":false,"filterable":false,"rowHeader":true},{"accessor":"Cutoff","name":"Cutoff","type":"character"},{"accessor":"Lost_K36me2_in_TKO","name":"Lost_K36me2_in_TKO","type":"numeric"},{"accessor":"Residual_K36me2_in_TKO","name":"Residual_K36me2_in_TKO","type":"numeric"},{"accessor":"PA_K9me3","name":"PA_K9me3","type":"numeric"},{"accessor":"PA_K9me3_subtract_by_TKO","name":"PA_K9me3_subtract_by_TKO","type":"numeric"},{"accessor":"TKO_K9me3","name":"TKO_K9me3","type":"numeric"},{"accessor":"TKO_K9me3_subtract_by_PA","name":"TKO_K9me3_subtract_by_PA","type":"numeric"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"bec7b2879a817e47b80247485627a4bb"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div id="k36me2" class="section level2">
+<h2>K36me2</h2>
+<div id="htmlwidget-9c8f063fefeb66dee028" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-9c8f063fefeb66dee028">{"x":{"tag":{"name":"Reactable","attribs":{"data":{".rownames":["Total_peaks","Mean_peak_width_bp","Median_peak_width_bp","Overlap_with_all_ATACseq_peaks","Overlap_with_closed_peaks","Overlap_with_open_peaks"],"Cutoff":["N/A","N/A","N/A","N/A","padj < 0.05; log2FC < -3","padj < 0.05; log2FC > 3"],"Lost_K36me2_in_TKO":[19524,26447,13600,23231,1995,152],"Residual_K36me2_in_TKO":[12497,18531,6999,16467,473,1212],"PA_K9me3":[3907,367482,111199,23891,1322,1244],"PA_K9me3_subtract_by_TKO":[2112,283800,203800,2293,183,294],"TKO_K9me3":[2171,695958,178199,43758,2437,1579],"TKO_K9me3_subtract_by_PA":[3871,174260,169601,22239,1301,636]},"columns":[{"accessor":".rownames","name":"","type":"character","sortable":false,"filterable":false,"rowHeader":true},{"accessor":"Cutoff","name":"Cutoff","type":"character"},{"accessor":"Lost_K36me2_in_TKO","name":"Lost_K36me2_in_TKO","type":"numeric"},{"accessor":"Residual_K36me2_in_TKO","name":"Residual_K36me2_in_TKO","type":"numeric"},{"accessor":"PA_K9me3","name":"PA_K9me3","type":"numeric"},{"accessor":"PA_K9me3_subtract_by_TKO","name":"PA_K9me3_subtract_by_TKO","type":"numeric"},{"accessor":"TKO_K9me3","name":"TKO_K9me3","type":"numeric"},{"accessor":"TKO_K9me3_subtract_by_PA","name":"TKO_K9me3_subtract_by_PA","type":"numeric"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"bec7b2879a817e47b80247485627a4bb"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="distribution" class="section level1 tabset">
-<h1 class="tabset">Distribution</h1>
+<div id="k9me3" class="section level2">
+<h2>K9me3</h2>
+<div id="htmlwidget-c390817036e1ec6e6c2f" class="reactable html-widget" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c390817036e1ec6e6c2f">{"x":{"tag":{"name":"Reactable","attribs":{"data":{".rownames":["Total_peaks","Mean_peak_width_bp","Median_peak_width_bp","Overlap_with_all_ATACseq_peaks","Overlap_with_closed_peaks","Overlap_with_open_peaks"],"Cutoff":["N/A","N/A","N/A","N/A","padj < 0.05; log2FC < -3","padj < 0.05; log2FC > 3"],"Lost_K36me2_in_TKO":[19524,26447,13600,23231,1995,152],"Residual_K36me2_in_TKO":[12497,18531,6999,16467,473,1212],"PA_K9me3":[3907,367482,111199,23891,1322,1244],"PA_K9me3_subtract_by_TKO":[2112,283800,203800,2293,183,294],"TKO_K9me3":[2171,695958,178199,43758,2437,1579],"TKO_K9me3_subtract_by_PA":[3871,174260,169601,22239,1301,636]},"columns":[{"accessor":".rownames","name":"","type":"character","sortable":false,"filterable":false,"rowHeader":true},{"accessor":"Cutoff","name":"Cutoff","type":"character"},{"accessor":"Lost_K36me2_in_TKO","name":"Lost_K36me2_in_TKO","type":"numeric"},{"accessor":"Residual_K36me2_in_TKO","name":"Residual_K36me2_in_TKO","type":"numeric"},{"accessor":"PA_K9me3","name":"PA_K9me3","type":"numeric"},{"accessor":"PA_K9me3_subtract_by_TKO","name":"PA_K9me3_subtract_by_TKO","type":"numeric"},{"accessor":"TKO_K9me3","name":"TKO_K9me3","type":"numeric"},{"accessor":"TKO_K9me3_subtract_by_PA","name":"TKO_K9me3_subtract_by_PA","type":"numeric"}],"defaultPageSize":10,"paginationType":"numbers","showPageInfo":true,"minRows":1,"dataKey":"bec7b2879a817e47b80247485627a4bb"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<hr />
+</div>
+</div>
+<div id="distribution" class="section level1 tabset tabset-pills">
+<h1 class="tabset tabset-pills">Distribution</h1>
 <div id="h3k36me2" class="section level2">
 <h2>H3K36me2</h2>
-<p><img src="differential_atac_files/figure-html/K36me2_distribution-1.png" width="100%" /></p>
 </div>
-<div id="atacseq-peaks" class="section level2">
-<h2>ATACseq peaks</h2>
-<p><img src="differential_atac_files/figure-html/ATAC_seq_distribution-1.png" width="100%" /></p>
+<div id="atacseq-peaks" class="section level2 tabset">
+<h2 class="tabset">ATACseq peaks</h2>
+<div id="tko-vs.-pa" class="section level3">
+<h3>TKO vs. PA</h3>
+</div>
+<div id="qko-vs.-pa" class="section level3">
+<h3>QKO vs. PA</h3>
+</div>
+<div id="qko-vs.-tko" class="section level3">
+<h3>QKO vs. TKO</h3>
 </div>
 </div>
-<div id="chip-signal" class="section level1">
-<h1>ChIP signal</h1>
+</div>
+<div id="chip-signal" class="section level1 tabset tabset-pills">
+<h1 class="tabset tabset-pills">ChIP signal</h1>
 <p>ChIP signal was centered on ATACseq peaks.</p>
-<p><img src="images/ATACseq.ATAC.final.profile.png" width="100%" /><img src="images/CTCF.ATAC.final.profile.png" width="100%" /><img src="images/K27ac.ATAC.final.profile.png" width="100%" /><img src="images/K27me3.ATAC.final.profile.png" width="100%" /><img src="images/K36me2.ATAC.final.profile.png" width="100%" /><img src="images/K9me3.ATAC.final.profile.png" width="100%" /></p>
+<div id="tko-vs.-pa-1" class="section level3">
+<h3>TKO vs. PA</h3>
+</div>
+<div id="qko-vs.-pa-1" class="section level3">
+<h3>QKO vs. PA</h3>
+</div>
+<div id="qko-vs.-tko-1" class="section level3">
+<h3>QKO vs. TKO</h3>
+</div>
 </div>
 
 

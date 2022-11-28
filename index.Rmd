@@ -208,35 +208,31 @@ final_df %>%
   reactable()
 ```
 
+```{r,merged,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
 ## Peak distribution {.tabset}
 
 ### Unmerged reps
-
-```{r,merged,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
 # s <- list.files(path = "~/Documents/10T_K36me2/data/epic2.peaks.final/unmerged_reps", pattern = '.epic2.',full.names = FALSE,recursive = FALSE) %>%
 #   tibble(f = .) %>%
 #   separate(f,c("samp",NA,NA,NA),'\\.',F) %>%
 #   mutate(f = file.path('~/Documents/10T_K36me2/data/epic2.peaks.final/unmerged_reps', f))
 # d <- deframe(s[,c('samp', 'f')])
 # peak_annot <- lapply(d,annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
-load(file="~/Documents/10T_K36me2/data/epic2.peaks.final/unmerged_reps/all_samples_annotation.RData")
-peak_annot_final <- peak_annot[c("PA_1","PA_3","NSD3_unedit","NSD1KO_c1","NSD1KO_c6","NSD2KO_c5","NSD2KO_c9","NSD3KO_c3","NSD3KO_c4","NSD3KO_c12","SETD2KO","NSD12DKO_1","NSD12DKO_2","TKO_unedit","TKO","QKO_c1","QKO_c7","K36M")]
-plotAnnoBar(peak_annot_final)
+# load(file="~/Documents/10T_K36me2/data/epic2.peaks.final/unmerged_reps/all_samples_annotation.RData")
+# peak_annot_final <- peak_annot[c("PA_1","PA_3","NSD3_unedit","NSD1KO_c1","NSD1KO_c6","NSD2KO_c5","NSD2KO_c9","NSD3KO_c3","NSD3KO_c4","NSD3KO_c12","SETD2KO","NSD12DKO_1","NSD12DKO_2","TKO_unedit","TKO","QKO_c1","QKO_c7","K36M")]
+# plotAnnoBar(peak_annot_final)
 ```
 
-### Merged reps
-
-Peaks that are 10kb adjacent to another peak were merged within a sample. The intersect of replicates were then taken. 
-
-```{r, unmerged,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+```{r, unmerged,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default",include=FALSE}
+# Peaks that are 10kb adjacent to another peak were merged within a sample. The intersect of replicates were then taken. 
 # s <- list.files(path = "~/Documents/10T_K36me2/data/epic2.peaks.final/merged_reps", pattern = '.epic2.',full.names = FALSE,recursive = FALSE) %>%
 #   tibble(f = .) %>%
 #   separate(f,c("samp",NA,NA,NA),'\\.',F) %>%
 #   mutate(f = file.path('~/Documents/10T_K36me2/data/epic2.peaks.final/merged_reps', f))
 # d <- deframe(s[,c('samp', 'f')])
 # peak_annot <- lapply(d,annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
-load(file="~/Documents/10T_K36me2/data/epic2.peaks.final/merged_reps/merged_samples_annotation.RData")
-peak_annot_final <- peak_annot[c("PA","NSD1KO","NSD2KO","NSD3KO","NSD12DKO","TKO","QKO")]
-plotAnnoBar(peak_annot_final)
+# load(file="~/Documents/10T_K36me2/data/epic2.peaks.final/merged_reps/merged_samples_annotation.RData")
+# peak_annot_final <- peak_annot[c("PA","NSD1KO","NSD2KO","NSD3KO","NSD12DKO","TKO","QKO")]
+# plotAnnoBar(peak_annot_final)
 ```
 

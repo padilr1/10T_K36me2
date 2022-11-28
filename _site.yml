@@ -2,14 +2,12 @@ name: ""
 navbar:
   title: "10T K36me2"
   left:
-    - text: "10T K36me2 Summary"
+    - text: "K36me2 summary"
       href: index.html
-    - text: "QKO analysis"
+    - text: "QKO reps analysis"
       href: QKO_analysis.html
-    - text: "ATAC-seq analysis"
+    - text: "ATAC-seq summary"
       href: ATACseq_analysis.html
-    - text: "Pairwise analysis"
-      href: Pairwise_analysis.html
     - text: "Differential ATAC"
       href: differential_atac.html
     - text: "Homer results"

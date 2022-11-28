@@ -36,11 +36,11 @@ library(org.Mm.eg.db)
 library(ChIPseeker)
 #
 library(gprofiler2)
-library(clusterProfiler)
+# library(clusterProfiler)
 #
 library(ChIPpeakAnno)
 library(VennDiagram)
-library(Vennerable)
+# library(Vennerable)
 #
 library(highcharter)
 library(heatmaply)
@@ -329,22 +329,22 @@ plotAnnoBar(l)
 plotDistToTSS(l)
 ```
 
-## Overlap
-```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='70%'}
-res <- makeVennDiagram(Peaks=list(QKO_c1,QKO_c7), NameOfPeaks=c("QKO_c1","QKO_c7"),plot = FALSE)
-res$vennCounts[4,3] <- 94
-res$vennCounts[3,3] <- 62
-res$vennCounts[2,3] <- 123
-#
-venn_cnt2venn <- function(venn_cnt){
- n <- which(colnames(venn_cnt)=="Counts") - 1
- SetNames=colnames(venn_cnt)[1:n]
- Weight=venn_cnt[,"Counts"]
- names(Weight) <- apply(venn_cnt[,1:n], 1, paste, collapse="")
- Venn(SetNames=SetNames, Weight=Weight)
- }
-v <- venn_cnt2venn(res$vennCounts)
-plot(v)
+```{r echo = FALSE, warning=FALSE,message=FALSE,out.width='70%',include=FALSE}
+##Overlap
+# res <- makeVennDiagram(Peaks=list(QKO_c1,QKO_c7), NameOfPeaks=c("QKO_c1","QKO_c7"),plot = FALSE)
+# res$vennCounts[4,3] <- 94
+# res$vennCounts[3,3] <- 62
+# res$vennCounts[2,3] <- 123
+# #
+# venn_cnt2venn <- function(venn_cnt){
+#  n <- which(colnames(venn_cnt)=="Counts") - 1
+#  SetNames=colnames(venn_cnt)[1:n]
+#  Weight=venn_cnt[,"Counts"]
+#  names(Weight) <- apply(venn_cnt[,1:n], 1, paste, collapse="")
+#  Venn(SetNames=SetNames, Weight=Weight)
+#  }
+# v <- venn_cnt2venn(res$vennCounts)
+# plot(v)
 ```
 
 ## Gene lists 
