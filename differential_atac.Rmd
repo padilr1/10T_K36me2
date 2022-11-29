@@ -19,18 +19,8 @@ library(knitr)
 library(reshape2)
 library(tidyverse)
 library(rtracklayer)
-library(isoband)
-library(sf)
-library(MASS)
-library(lwgeom)
 library(ggrepel)
-library(hexbin)
 library(ggplot2)
-library(ggrastr)
-library(viridis)
-library(pals)
-library(patchwork)
-library(highcharter)
 library(dplyr)
 library(GenomicRanges)
 library(reactable)
@@ -44,12 +34,12 @@ library(TxDb.Mmusculus.UCSC.mm10.knownGene)
 library(org.Mm.eg.db)
 library(ChIPseeker)
 #
-txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
-#
-options(ChIPseeker.ignore_1st_exon = TRUE)
-options(ChIPseeker.ignore_1st_intron = TRUE)
-options(ChIPseeker.ignore_downstream = TRUE)
-options(ChIPseeker.ignore_promoter_subcategory = TRUE)
+# txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
+# #
+# options(ChIPseeker.ignore_1st_exon = TRUE)
+# options(ChIPseeker.ignore_1st_intron = TRUE)
+# options(ChIPseeker.ignore_downstream = TRUE)
+# options(ChIPseeker.ignore_promoter_subcategory = TRUE)
 ```
 
 ```{r,load_objects,include=FALSE}
@@ -128,14 +118,22 @@ reactable(df)
 
 # ChIP signal {.tabset .tabset-pills}
 
-ChIP signal was centered on ATACseq peaks.
+ChIP/ATAC signal was centered on ATACseq peaks.
 
 ### TKO vs. PA
-```{r,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
-# imageList <- list.files("~/Documents/10T_K36me2/images", pattern= "*ATAC.final.profile.png", full.names=T)
-# include_graphics(imageList,dpi = 600)
+```{r,heatmap_TKO_cf_PA,echo = FALSE,fig.show = "hold", out.width = "33%", fig.align = "default"}
+imageList <- list.files("~/Documents/10T_K36me2/images/TKO_cf_PA_log2FC_3", pattern= "*.png", full.names=T)
+include_graphics(imageList,dpi = 600)
 ```
 
 ### QKO vs. PA
+```{r,heatmap_QKO_cf_PA,echo = FALSE,fig.show = "hold", out.width = "33%", fig.align = "default"}
+imageList <- list.files("~/Documents/10T_K36me2/images/QKO_cf_PA_log2FC_3", pattern= "*.png", full.names=T)
+include_graphics(imageList,dpi = 600)
+```
 
 ### QKO vs. TKO
+```{r,heatmap_QKO_cf_TKO,echo = FALSE,fig.show = "hold", out.width = "33%", fig.align = "default"}
+imageList <- list.files("~/Documents/10T_K36me2/images/QKO_cf_TKO_log2FC_2", pattern= "*.png", full.names=T)
+include_graphics(imageList,dpi = 600)
+```

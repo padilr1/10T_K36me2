@@ -76,6 +76,27 @@ include_graphics(path = "~/Documents/10T_K36me2/images/10T.ms.graph.K27ratio.png
 include_graphics(path = "~/Documents/10T_K36me2/images/10T.ms.graph.K4me.K9me.png",dpi = 600)
 ```
 
+# ChIP-Rx
+```{r,ChIP_RX,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+df <- fread("~/Documents/10T_K36me2/data/rx/10T_Rx.txt")
+df$samp <- gsub(pattern = ":.*",replacement = "",df$ChIP_EndogenousMappedReads)
+df <- df %>%
+  dplyr::filter(samp != "PA_H2AK119ub_1")
+f <- df %>% 
+  dplyr::filter(!str_detect(samp, "sg")) %>%
+  dplyr::filter(!str_detect(samp, "H33K36M"))
+f$samp <- gsub(pattern = ".*10T1-2_",replacement = "",f$samp)
+f$samp <- gsub(pattern = ".*10T_",replacement = "",f$samp)
+f <- f %>%
+  dplyr::select(c(samp,ChIP_Rx))
+# ggplot(f,aes(x = samp,y=ChIP_Rx)) +
+#   geom_col() +
+#   coord_flip()
+f %>%
+  reactable()
+```
+
+
 # K36me2 10kb bins
 
 ```{r include=FALSE}
