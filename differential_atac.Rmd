@@ -34,106 +34,140 @@ library(TxDb.Mmusculus.UCSC.mm10.knownGene)
 library(org.Mm.eg.db)
 library(ChIPseeker)
 #
-# txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
-# #
-# options(ChIPseeker.ignore_1st_exon = TRUE)
-# options(ChIPseeker.ignore_1st_intron = TRUE)
-# options(ChIPseeker.ignore_downstream = TRUE)
-# options(ChIPseeker.ignore_promoter_subcategory = TRUE)
-```
-
-```{r,load_objects,include=FALSE}
-# K36me2 peaks
-Lost.K36me2.in.TKO <- import.bed("~/Documents/10T_K36me2/data/Lost.K36me2.regions/PA_subtracted_by_TKO.bed")
-Remaining.K36me2.in.TKO <- import.bed("~/Documents/10T_K36me2/data/epic2.peaks.final/merged_reps/TKO.ol.epic2.bed")
-# ATACseq peaks
-closed_peaks <- import.bed("~/Documents/10T_K36me2/regionDB/mm10/ATACpeaks/regions/closed_ATACpeaks.bed")
-open_peaks <- import.bed("~/Documents/10T_K36me2/regionDB/mm10/ATACpeaks/regions/open_ATACpeaks.bed")
-all_peaks <- import.bed("~/Documents/10T_K36me2/regionDB/mm10/ATACpeaks/regions/all_ATACpeaks.bed")
-######## distribution of lost K36me2 peaks vs remaining K36me2 peaks ######
-# l <- list(Remaining_K36me2_in_TKO=Remaining.K36me2.in.TKO,Lost_K36me2_in_TKO=Lost.K36me2.in.TKO)
-# peak_annot <- lapply(l,annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
-# save(peak_annot,file="~/Documents/10T_K36me2/data/RData/annotation/lost_remaining_K36me2_TKO.RData")
-# plotAnnoBar(peak_annot)
-# #
-# l <- list(all_peaks=all_peaks,closed_peaks=closed_peaks,open_peaks=open_peaks)
-# peak_annot <- lapply(l,annotatePeak,TxDb = txdb,tssRegion = c(-3000, 3000))
-# df <- peak_annot$open_peaks %>% as.data.frame()
-# plotAnnoBar(peak_annot)
-# #
-# promoter <- df %>%
-#   dplyr::filter(str_detect(annotation, "Promoter")) %>%
-#   dplyr::select(1:3)
-# intergenic <- df %>%
-#   dplyr::filter(str_detect(annotation, "Distal Intergenic")) %>%
-#   dplyr::select(1:3)
-# intron <- df %>%
-#   dplyr::filter(str_detect(annotation, "Intron")) %>%
-#   dplyr::select(1:3)
-# #
-# export.bed(object = promoter,con="~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_v_PA_cutoff_logFC_3/open_peaks.promoter.bed")
-# export.bed(object = intergenic,con="~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_v_PA_cutoff_logFC_3/open_peaks.intergenic.bed")
-# export.bed(object = intron,con="~/Documents/10T_K36me2/data/differential.ATACseq.regions/TKO_v_PA_cutoff_logFC_3/open_peaks.intron.bed")
-# save(peak_annot,file="~/Documents/10T_K36me2/data/RData/annotation/differential_ATAC_peaks_TKO.RData")
+txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene
+#
+options(ChIPseeker.ignore_1st_exon = TRUE)
+options(ChIPseeker.ignore_1st_intron = TRUE)
+options(ChIPseeker.ignore_downstream = TRUE)
+options(ChIPseeker.ignore_promoter_subcategory = TRUE)
 ```
 
 # Table of overlap
 
-## K36me2 
+## K36me2 {.tabset .tabset-pills}
+
+### TKO vs. PA
+```{r,table_ol_K36me2_TKO_PA,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+df <- read.csv("~/Documents/10T_K36me2/data/overlap.tables/TKO_cf_PA.ATACseq.K36me2.csv") %>%
+  column_to_rownames("X")
+reactable(df)
+```
+
+### QKO vs. PA
 ```{r,table_ol_K36me2,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-df <- read.csv("~/Documents/10T_K36me2/data/Lost.K36me2.regions/ol.ATAC.K36me2.table.csv") %>%
-  column_to_rownames("X")
+df <- read.csv("~/Documents/10T_K36me2/data/overlap.tables/QKO_cf_PA.ATACseq.K36me2.csv")
 reactable(df)
 ```
 
-## K9me3
+### QKO vs. TKO
+```{r,table_ol_K36me2_QKO_TKO,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+df <- read.csv("~/Documents/10T_K36me2/data/overlap.tables/QKO_cf_TKO.ATACseq.K36me2.csv")
+reactable(df)
+```
+
+## K9me3 {.tabset .tabset-pills}
+
+### TKO vs. PA
 ```{r,table_ol_K9me3,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-df <- read.csv("~/Documents/10T_K36me2/data/Lost.K36me2.regions/ol.ATAC.K36me2.table.csv") %>%
+df <- read.csv("~/Documents/10T_K36me2/data/overlap.tables/TKO_cf_PA.ATACseq.K9me3.csv") %>%
   column_to_rownames("X")
 reactable(df)
 ```
-
 
 ---
 
 # Distribution {.tabset .tabset-pills}
 
-## H3K36me2
-```{r,K36me2_distribution,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-# load(file="~/Documents/10T_K36me2/data/RData/annotation/lost_remaining_K36me2_TKO.RData")
-# plotAnnoBar(peak_annot)
+## TKO vs. PA
+```{r,ATAC_seq_distribution_TKO_cf_PA,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+load("~/Documents/10T_K36me2/data/differential.ATACseq.regions/distributions/TKO_cf_PA.ATAC.distribution.RData")
+plotAnnoBar(peak_ann)
 ```
 
-## ATACseq peaks {.tabset}
-
-### TKO vs. PA
-```{r,ATAC_seq_distribution,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
-# load("~/Documents/10T_K36me2/data/RData/annotation/differential_ATAC_peaks_TKO.RData")
-# plotAnnoBar(peak_annot)
+## QKO vs. PA
+```{r,ATAC_seq_distribution_QKO_cf_PA,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+load("~/Documents/10T_K36me2/data/differential.ATACseq.regions/distributions/QKO_cf_PA.ATAC.distribution.RData")
+plotAnnoBar(peak_ann)
 ```
 
-### QKO vs. PA
+## QKO vs. TKO
+```{r,ATAC_seq_distribution_QKO_TKO,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+load("~/Documents/10T_K36me2/data/differential.ATACseq.regions/distributions/QKO_cf_TKO.ATAC.distribution.RData")
+plotAnnoBar(peak_ann)
+```
 
-### QKO vs. TKO
+---
 
 # ChIP signal {.tabset .tabset-pills}
 
-ChIP/ATAC signal was centered on ATACseq peaks.
+## TKO vs. PA {.tabset .tabset-pills}
 
-### TKO vs. PA
+### ATAC {.tabset}
+
+#### All
 ```{r,heatmap_TKO_cf_PA,echo = FALSE,fig.show = "hold", out.width = "33%", fig.align = "default"}
 imageList <- list.files("~/Documents/10T_K36me2/images/TKO_cf_PA_log2FC_3", pattern= "*.png", full.names=T)
 include_graphics(imageList,dpi = 600)
 ```
 
-### QKO vs. PA
+#### Promoter vs. IGR
+```{r,heatmap_TKO_cf_PA.IGR_Promoter,echo = FALSE,fig.show = "hold", out.width = "100%", fig.align = "default"}
+imageList <- list.files("~/Documents/10T_K36me2/images/TKO_cf_PA_log2FC_3/promoter_cf_IGR", pattern= "*.png", full.names=T)
+include_graphics(imageList,dpi = 600)
+```
+
+## QKO vs. PA
 ```{r,heatmap_QKO_cf_PA,echo = FALSE,fig.show = "hold", out.width = "33%", fig.align = "default"}
 imageList <- list.files("~/Documents/10T_K36me2/images/QKO_cf_PA_log2FC_3", pattern= "*.png", full.names=T)
 include_graphics(imageList,dpi = 600)
 ```
 
-### QKO vs. TKO
+## QKO vs. TKO
 ```{r,heatmap_QKO_cf_TKO,echo = FALSE,fig.show = "hold", out.width = "33%", fig.align = "default"}
 imageList <- list.files("~/Documents/10T_K36me2/images/QKO_cf_TKO_log2FC_2", pattern= "*.png", full.names=T)
+include_graphics(imageList,dpi = 600)
+```
+
+---
+
+# Enhancers {.tabset .tabset-pills}
+
+## Overlap {.tabset}
+
+### TKO vs. PA
+```{r,table_ol_K36me2_TKO_PA_enh,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+df <- read.csv("~/Documents/10T_K36me2/data/overlap.tables/TKO_cf_PA.ATACseq.enhancers.csv")
+reactable(df)
+```
+
+### QKO vs. PA
+```{r,table_ol_K36me2_QKO_PA_enh,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+df <- read.csv("~/Documents/10T_K36me2/data/overlap.tables/QKO_cf_PA.ATACseq.enhancers.csv")
+reactable(df)
+```
+
+### QKO vs. TKO
+```{r,table_ol_K36me2_QKO_TKO_enh,echo = FALSE, out.width = "100%", fig.align = "default",message=FALSE,warning=FALSE}
+df <- read.csv("~/Documents/10T_K36me2/data/overlap.tables/QKO_cf_TKO.ATACseq.enhancers.csv")
+reactable(df)
+```
+
+## Heatmaps {.tabset}
+
+### TKO vs. PA
+```{r,heatmap_TKO_cf_PA_enhancer,echo = FALSE,fig.show = "hold", out.width = "50%", fig.align = "default"}
+imageList <- list.files("~/Documents/10T_K36me2/images/TKO_cf_PA.enhancer", pattern= "*.png", full.names=T)
+include_graphics(imageList,dpi = 600)
+```
+
+### QKO vs. PA
+```{r,heatmap_QKO_cf_PA_enhancer,echo = FALSE,fig.show = "hold", out.width = "50%", fig.align = "default"}
+imageList <- list.files("~/Documents/10T_K36me2/images/QKO_cf_PA.enhancer", pattern= "*.png", full.names=T)
+include_graphics(imageList,dpi = 600)
+```
+
+### QKO vs. TKO
+```{r,heatmap_QKO_cf_TKO_enhancer,echo = FALSE,fig.show = "hold", out.width = "50%", fig.align = "default"}
+imageList <- list.files("~/Documents/10T_K36me2/images/QKO_cf_TKO.enhancer", pattern= "*.png", full.names=T)
 include_graphics(imageList,dpi = 600)
 ```
